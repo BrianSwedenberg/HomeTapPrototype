@@ -10,7 +10,7 @@ export const DEMO_PARTNERS = {
   realEstateAgent: {
     id: '22222222-2222-2222-2222-222222222222',
     name: 'Sarah Okonkwo',
-    type: 'Real Estate Agent',
+    type: 'Financial Advisor',
     company: 'Okonkwo Investment Realty',
     initials: 'SO',
     avatarColor: 'teal' as const,
