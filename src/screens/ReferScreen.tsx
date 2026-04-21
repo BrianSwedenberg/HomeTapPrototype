@@ -6,10 +6,7 @@ import { ReferralForm } from '../components/referral/ReferralForm';
 import { DEMO_PARTNERS } from '../lib/demoPartners';
 
 export function ReferScreen() {
-  const { partner, activePartnerId } = useAppStore(s => ({
-    partner:         s.partner,
-    activePartnerId: s.activePartnerId,
-  }));
+  const activePartnerId = useAppStore(s => s.activePartnerId);
 
   const demoPartner = activePartnerId === DEMO_PARTNERS.realEstateAgent.id
     ? DEMO_PARTNERS.realEstateAgent

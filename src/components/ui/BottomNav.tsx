@@ -1,5 +1,4 @@
 import { useAppStore } from '../../store/useAppStore';
-import type { Screen } from '../../types';
 
 type ActiveTab = 'refer' | 'pipeline' | 'account' | null;
 

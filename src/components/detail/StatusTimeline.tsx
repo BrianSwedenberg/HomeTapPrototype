@@ -15,7 +15,7 @@ const CHECKMARK = (
   </svg>
 );
 
-export function StatusTimeline({ allStatuses, history, currentStatusId }: StatusTimelineProps) {
+export function StatusTimeline({ allStatuses, history }: StatusTimelineProps) {
   const historyByStatusId: Record<number, StatusHistoryEntry> = {};
   for (const entry of history) {
     historyByStatusId[entry.status_id] = entry;
