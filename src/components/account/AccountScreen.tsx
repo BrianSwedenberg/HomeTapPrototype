@@ -8,13 +8,11 @@ import { DEMO_PARTNERS } from '../../lib/demoPartners';
 // FUTURE: payout connection — bank account setup flow
 
 export function AccountScreen() {
-  const { partner, leads, activePartnerId, clearPartner, navigateTo } = useAppStore(s => ({
-    partner:         s.partner,
-    leads:           s.leads,
-    activePartnerId: s.activePartnerId,
-    clearPartner:    s.clearPartner,
-    navigateTo:      s.navigateTo,
-  }));
+  const partner         = useAppStore(s => s.partner);
+  const leads           = useAppStore(s => s.leads);
+  const activePartnerId = useAppStore(s => s.activePartnerId);
+  const clearPartner    = useAppStore(s => s.clearPartner);
+  const navigateTo      = useAppStore(s => s.navigateTo);
 
   const demoPartner = activePartnerId === DEMO_PARTNERS.realEstateAgent.id
     ? DEMO_PARTNERS.realEstateAgent

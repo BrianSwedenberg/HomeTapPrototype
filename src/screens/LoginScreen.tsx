@@ -6,10 +6,8 @@ import { useAppStore } from '../store/useAppStore';
 export function LoginScreen() {
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const { loadPartnerData } = usePartnerData();
-  const { setActivePartner, navigateTo } = useAppStore(s => ({
-    setActivePartner: s.setActivePartner,
-    navigateTo:       s.navigateTo,
-  }));
+  const setActivePartner = useAppStore(s => s.setActivePartner);
+  const navigateTo = useAppStore(s => s.navigateTo);
 
   async function handleSelectPartner(partnerId: string) {
     if (loadingId) return;

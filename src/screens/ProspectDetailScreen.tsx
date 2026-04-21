@@ -8,14 +8,12 @@ import { StatusTimeline } from '../components/detail/StatusTimeline';
 import { DEMO_PARTNERS } from '../lib/demoPartners';
 
 export function ProspectDetailScreen() {
-  const { leads, allStatuses, selectedLeadId, statusHistoryMap, activePartnerId, navigateTo } = useAppStore(s => ({
-    leads:            s.leads,
-    allStatuses:      s.allStatuses,
-    selectedLeadId:   s.selectedLeadId,
-    statusHistoryMap: s.statusHistoryMap,
-    activePartnerId:  s.activePartnerId,
-    navigateTo:       s.navigateTo,
-  }));
+  const leads            = useAppStore(s => s.leads);
+  const allStatuses      = useAppStore(s => s.allStatuses);
+  const selectedLeadId   = useAppStore(s => s.selectedLeadId);
+  const statusHistoryMap = useAppStore(s => s.statusHistoryMap);
+  const activePartnerId  = useAppStore(s => s.activePartnerId);
+  const navigateTo       = useAppStore(s => s.navigateTo);
 
   const lead    = leads.find(l => l.LeadID === selectedLeadId);
   const history = lead ? (statusHistoryMap[lead.LeadID] ?? []) : [];

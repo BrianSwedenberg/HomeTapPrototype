@@ -4,12 +4,10 @@ import { BottomNav } from '../ui/BottomNav';
 import { fetchPartnerData } from '../../lib/fetchPartnerData';
 
 export function ConfirmationScreen() {
-  const { pendingReferral, activePartnerId, setPartnerData, navigateTo } = useAppStore(s => ({
-    pendingReferral:  s.pendingReferral,
-    activePartnerId:  s.activePartnerId,
-    setPartnerData:   s.setPartnerData,
-    navigateTo:       s.navigateTo,
-  }));
+  const pendingReferral = useAppStore(s => s.pendingReferral);
+  const activePartnerId = useAppStore(s => s.activePartnerId);
+  const setPartnerData  = useAppStore(s => s.setPartnerData);
+  const navigateTo      = useAppStore(s => s.navigateTo);
 
   const firstName = pendingReferral?.firstName ?? 'the homeowner';
   const fullName  = pendingReferral ? `${pendingReferral.firstName} ${pendingReferral.lastName}` : 'Homeowner';

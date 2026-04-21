@@ -1,10 +1,8 @@
 import { useAppStore } from '../../store/useAppStore';
 
 export function FAB() {
-  const { currentScreen, navigateTo } = useAppStore(s => ({
-    currentScreen: s.currentScreen,
-    navigateTo:    s.navigateTo,
-  }));
+  const currentScreen = useAppStore(s => s.currentScreen);
+  const navigateTo = useAppStore(s => s.navigateTo);
 
   function handleClick() {
     if (currentScreen === 'refer') return; // no-op on Refer screen

@@ -16,11 +16,9 @@ export function ReferralForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError]   = useState<string | null>(null);
 
-  const { activePartnerId, setPendingReferral, navigateTo } = useAppStore(s => ({
-    activePartnerId:     s.activePartnerId,
-    setPendingReferral:  s.setPendingReferral,
-    navigateTo:          s.navigateTo,
-  }));
+  const activePartnerId    = useAppStore(s => s.activePartnerId);
+  const setPendingReferral = useAppStore(s => s.setPendingReferral);
+  const navigateTo         = useAppStore(s => s.navigateTo);
 
   function handleField(field: keyof ReferralFormData) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>

@@ -7,10 +7,8 @@ import { LeadList } from '../components/dashboard/LeadList';
 import { DEMO_PARTNERS } from '../lib/demoPartners';
 
 export function PipelineScreen() {
-  const { partner, activePartnerId } = useAppStore(s => ({
-    partner:         s.partner,
-    activePartnerId: s.activePartnerId,
-  }));
+  const partner         = useAppStore(s => s.partner);
+  const activePartnerId = useAppStore(s => s.activePartnerId);
 
   const demoPartner = activePartnerId === DEMO_PARTNERS.realEstateAgent.id
     ? DEMO_PARTNERS.realEstateAgent
