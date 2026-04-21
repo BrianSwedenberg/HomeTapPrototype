@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Screen 06 — Account</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-primary:        #6B3FA0;
+    --color-primary-dark:   #4E2D7A;
+    --color-primary-light:  #EDE7F6;
+    --color-text-primary:   #1A1A2E;
+    --color-text-secondary: #5C5C7A;
+    --color-text-disabled:  #AAAAAA;
+    --color-border-light:   #EEECF6;
+    --color-bg-page:        #F7F6FC;
+    --color-bg-card:        #FFFFFF;
+    --color-success:        #2E7D32;
+    --color-success-bg:     #E8F5E9;
+    --color-error:          #C62828;
+    --color-error-bg:       #FFEBEE;
+    --color-error-border:   #FFCDD2;
+    --font-primary:         'DM Sans', system-ui, sans-serif;
+    --radius-md:            10px;
+    --radius-lg:            16px;
+    --radius-full:          9999px;
+    --shadow-card:          0 2px 12px rgba(107,63,160,0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-primary);
+    background: var(--color-bg-page);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 390px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-page);
+  }
+
+  /* ── TOP BAR ── */
+  .top-bar {
+    background: var(--color-bg-card);
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .top-bar-label { font-size: 12px; color: var(--color-text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.6px; display: block; }
+  .top-bar-name  { font-size: 18px; font-weight: 700; color: var(--color-text-primary); letter-spacing: -0.3px; display: block; }
+  .top-bar-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--color-primary-light); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--color-primary); flex-shrink: 0; }
+
+  /* ── SCROLL AREA ── */
+  .scroll-area { flex: 1; padding: 20px 16px 100px; overflow-y: auto; }
+
+  /* ── PROFILE HERO ── */
+  .profile-hero {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--color-border-light);
+    box-shadow: var(--shadow-card);
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .profile-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--color-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 12px;
+  }
+
+  .profile-name    { font-size: 20px; font-weight: 700; color: var(--color-text-primary); letter-spacing: -0.3px; margin-bottom: 2px; }
+  .profile-type    { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 2px; }
+  .profile-company { font-size: 13px; color: var(--color-text-secondary); }
+
+  .profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--color-success-bg);
+    border-radius: var(--radius-full);
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-success);
+    margin-top: 12px;
+  }
+
+  .profile-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-success); }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+
+  /* ── INFO CARD ── */
+  .info-card {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--color-border-light);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+
+  .info-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    border-bottom: 1px solid #F5F4FA;
+  }
+
+  .info-row:last-child { border-bottom: none; }
+
+  .info-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--color-bg-page);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .info-col { flex: 1; display: flex; flex-direction: column; gap: 1px; }
+  .info-label { font-size: 11px; color: var(--color-text-disabled); font-weight: 500; }
+  .info-value { font-size: 13px; color: var(--color-text-primary); font-weight: 500; }
+  .info-value.muted { color: var(--color-text-disabled); font-style: italic; }
+  .info-value.link  { color: var(--color-primary); }
+
+  .info-action {
+    font-size: 12px;
+    color: var(--color-primary);
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* ── EARNINGS GRID ── */
+  .earnings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .earnings-tile {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--color-border-light);
+    padding: 14px 16px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .earnings-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+  .earnings-value { font-size: 22px; font-weight: 700; color: var(--color-text-primary); letter-spacing: -0.3px; line-height: 1; }
+  .earnings-value.green  { color: var(--color-success); }
+  .earnings-value.purple { color: var(--color-primary); }
+  .earnings-sub { font-size: 11px; color: var(--color-text-disabled); margin-top: 4px; }
+
+  /* ── SIGN OUT ── */
+  .sign-out-btn {
+    width: 100%;
+    height: 48px;
+    background: transparent;
+    color: var(--color-error);
+    font-family: var(--font-primary);
+    font-size: 14px;
+    font-weight: 600;
+    border: 1.5px solid var(--color-error-border);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    margin-top: 24px;
+    transition: background 150ms;
+  }
+
+  .sign-out-btn:hover { background: var(--color-error-bg); }
+
+  /* ── BOTTOM NAV + FAB ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 390px;
+    background: var(--color-bg-card);
+    border-top: 1px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 8px 0 16px;
+    z-index: 100;
+    height: 64px;
+  }
+
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; flex: 1; padding: 4px 0; }
+  .nav-icon  { width: 22px; height: 22px; }
+  .nav-label { font-size: 10px; font-weight: 500; color: var(--color-text-disabled); }
+  .nav-item.active .nav-label { color: var(--color-primary); }
+
+  .fab {
+    position: fixed;
+    bottom: 80px;
+    right: calc(50% - 195px + 16px);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(107,63,160,0.45);
+    cursor: pointer;
+    z-index: 200;
+    border: none;
+    transition: background 180ms, transform 100ms;
+  }
+
+  .fab:hover { background: var(--color-primary-dark); transform: scale(1.05); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div>
+      <span class="top-bar-label">Partner Portal</span>
+      <span class="top-bar-name">My Account</span>
+    </div>
+    <div class="top-bar-avatar">MW</div>
+  </div>
+
+  <div class="scroll-area">
+
+    <!-- PROFILE HERO -->
+    <div class="profile-hero">
+      <div class="profile-avatar">MW</div>
+      <div class="profile-name">Marcus Webb</div>
+      <div class="profile-type">Contractor</div>
+      <div class="profile-company">Webb &amp; Sons Home Improvement</div>
+      <div class="profile-badge">
+        <span class="profile-badge-dot"></span>
+        Active Partner
+      </div>
+    </div>
+
+    <!-- CONTACT INFO -->
+    <div class="section-title">Contact Info</div>
+    <div class="info-card">
+      <div class="info-row">
+        <div class="info-icon">✉️</div>
+        <div class="info-col">
+          <span class="info-label">Email</span>
+          <span class="info-value">marcus@webbhomeimprovement.com</span>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">📞</div>
+        <div class="info-col">
+          <span class="info-label">Phone</span>
+          <span class="info-value">617-555-0101</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYOUT INFO -->
+    <div class="section-title">Payout Info</div>
+    <div class="info-card">
+      <div class="info-row">
+        <div class="info-icon">🏦</div>
+        <div class="info-col">
+          <span class="info-label">Bank account</span>
+          <span class="info-value muted">Not connected</span>
+        </div>
+        <span class="info-action">Add</span>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">💸</div>
+        <div class="info-col">
+          <span class="info-label">Referral fee per closed deal</span>
+          <span class="info-value">$500</span>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">📄</div>
+        <div class="info-col">
+          <span class="info-label">Partner agreement</span>
+          <span class="info-value link">View agreement</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- EARNINGS SUMMARY -->
+    <div class="section-title">Earnings Summary</div>
+    <div class="earnings-grid">
+      <div class="earnings-tile">
+        <div class="earnings-label">Total Earned</div>
+        <div class="earnings-value green">$500</div>
+        <div class="earnings-sub">All time</div>
+      </div>
+      <div class="earnings-tile">
+        <div class="earnings-label">Pending</div>
+        <div class="earnings-value purple">$1,500</div>
+        <div class="earnings-sub">3 active leads</div>
+      </div>
+      <div class="earnings-tile">
+        <div class="earnings-label">Deals Closed</div>
+        <div class="earnings-value">1</div>
+        <div class="earnings-sub">Of 4 referred</div>
+      </div>
+      <div class="earnings-tile">
+        <div class="earnings-label">Close Rate</div>
+        <div class="earnings-value">25%</div>
+        <div class="earnings-sub">Last 90 days</div>
+      </div>
+    </div>
+
+    <!-- SIGN OUT -->
+    <button class="sign-out-btn" type="button">Sign out</button>
+
+  </div>
+
+  <!-- FAB -->
+  <button class="fab" aria-label="Refer a new homeowner">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <!-- BOTTOM NAV — Account tab active -->
+  <nav class="bottom-nav">
+    <div class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M12 5v14M5 12h14" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-label">Refer</span>
+    </div>
+    <div class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="3" width="7" height="7" rx="1.5" fill="#AAAAAA"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.5" fill="#AAAAAA"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.5" fill="#AAAAAA"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5" fill="#AAAAAA"/>
+      </svg>
+      <span class="nav-label">Pipeline</span>
+    </div>
+    <!-- Account tab — ACTIVE -->
+    <div class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="8" r="4" fill="#6B3FA0"/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" fill="#6B3FA0"/>
+      </svg>
+      <span class="nav-label" style="color:#6B3FA0;">Account</span>
+    </div>
+  </nav>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Screen 03 — Refer (New Referral Form)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-primary:        #6B3FA0;
+    --color-primary-dark:   #4E2D7A;
+    --color-primary-light:  #EDE7F6;
+    --color-text-primary:   #1A1A2E;
+    --color-text-secondary: #5C5C7A;
+    --color-text-disabled:  #AAAAAA;
+    --color-border:         #D0D0E0;
+    --color-border-light:   #EEECF6;
+    --color-border-input:   #E8E6F0;
+    --color-bg-page:        #F7F6FC;
+    --color-bg-card:        #FFFFFF;
+    --color-bg-input:       #FAFAFE;
+    --color-input-text:     #3D3A52;
+    --color-placeholder:    #C4C2D4;
+    --color-error:          #C62828;
+    --font-primary:         'DM Sans', system-ui, sans-serif;
+    --radius-md:            10px;
+    --radius-lg:            16px;
+    --radius-full:          9999px;
+    --shadow-card:          0 2px 12px rgba(107,63,160,0.05);
+    --shadow-focus:         0 0 0 3px rgba(107,63,160,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-primary);
+    background: var(--color-bg-page);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 390px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: var(--color-bg-page);
+  }
+
+  /* ── TOP BAR ── */
+  .top-bar {
+    background: var(--color-bg-card);
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .top-bar-label { font-size: 12px; color: var(--color-text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.6px; display: block; }
+  .top-bar-name  { font-size: 18px; font-weight: 700; color: var(--color-text-primary); letter-spacing: -0.3px; display: block; }
+  .top-bar-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--color-primary-light); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--color-primary); flex-shrink: 0; }
+
+  /* ── SCROLL AREA ── */
+  .scroll-area { flex: 1; padding: 20px 16px 120px; overflow-y: auto; }
+
+  /* ── FORM SECTIONS ── */
+  .form-section { margin-bottom: 24px; }
+  .form-section-title { font-size: 12px; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
+
+  /* ── FIELDS ── */
+  .field-row { display: flex; gap: 10px; margin-bottom: 12px; }
+  .field { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+  .field-label { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); }
+  .req { color: var(--color-error); margin-left: 2px; }
+
+  /* ── INPUTS ──
+     DESIGN NOTE: Inputs use a very light purple-tinted background (#FAFAFE)
+     with a soft border (#E8E6F0) to be visually distinct from the page
+     background (#F7F6FC) without feeling filled or heavy.
+     On focus: border sharpens to primary purple + focus ring appears.
+  */
+  .field-input {
+    height: 48px;
+    padding: 0 14px;
+    border: 1.5px solid var(--color-border-input);
+    border-radius: var(--radius-md);
+    font-family: var(--font-primary);
+    font-size: 14px;
+    color: var(--color-input-text);
+    background: var(--color-bg-input);
+    outline: none;
+    transition: border-color 150ms, box-shadow 150ms, background 150ms;
+    width: 100%;
+  }
+
+  .field-input:focus {
+    border-color: var(--color-primary);
+    border-width: 2px;
+    box-shadow: var(--shadow-focus);
+    background: var(--color-bg-card);
+  }
+
+  .field-input::placeholder { color: var(--color-placeholder); }
+
+  .field-textarea {
+    padding: 12px 14px;
+    height: 88px;
+    resize: none;
+    border: 1.5px solid var(--color-border-input);
+    border-radius: var(--radius-md);
+    font-family: var(--font-primary);
+    font-size: 14px;
+    color: var(--color-input-text);
+    background: var(--color-bg-input);
+    outline: none;
+    transition: border-color 150ms, box-shadow 150ms, background 150ms;
+    width: 100%;
+    line-height: 1.5;
+  }
+
+  .field-textarea:focus {
+    border-color: var(--color-primary);
+    border-width: 2px;
+    box-shadow: var(--shadow-focus);
+    background: var(--color-bg-card);
+  }
+
+  .field-textarea::placeholder { color: var(--color-placeholder); }
+
+  /* ── USE CASE ACCORDION ──
+     INTERACTION NOTES:
+     - Two parent cards: "Home Repair / Renovation" and "Investment Capital"
+     - Tapping a parent card toggles its expanded state
+     - Selecting a child option:
+         1. Collapses the parent card
+         2. Shows a selection indicator pill in the parent header
+         3. Clears any selection in the other category
+         4. Selecting "Other" reveals an inline text input below the option
+     - Only one category can have an active selection at a time
+  */
+  .use-case-group { display: flex; flex-direction: column; gap: 10px; }
+
+  .parent-card {
+    border: 1.5px solid var(--color-border-input);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-card);
+    overflow: hidden;
+    transition: border-color 150ms;
+  }
+
+  .parent-card.expanded { border-color: var(--color-primary); border-width: 2px; }
+  .parent-card.has-selection { border-color: var(--color-primary); border-width: 2px; background: #F5F0FC; }
+
+  .parent-trigger {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+  }
+
+  .parent-icon    { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+  .parent-text    { flex: 1; }
+  .parent-label   { font-size: 15px; font-weight: 600; color: var(--color-text-primary); display: block; }
+  .parent-sublabel{ font-size: 12px; color: var(--color-text-secondary); display: block; margin-top: 1px; }
+  .parent-chevron { font-size: 16px; color: var(--color-placeholder); transition: transform 200ms; flex-shrink: 0; }
+
+  .parent-card.expanded .parent-chevron  { transform: rotate(90deg); }
+  .parent-card.has-selection .parent-chevron { transform: rotate(90deg); }
+
+  .selected-indicator {
+    font-size: 11px;
+    color: var(--color-primary);
+    font-weight: 600;
+    background: var(--color-primary-light);
+    border-radius: var(--radius-full);
+    padding: 2px 8px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .children-wrap {
+    border-top: 1px solid var(--color-border-light);
+    padding: 10px 12px 12px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: #FDFCFF;
+  }
+
+  .parent-card.expanded .children-wrap,
+  .parent-card.has-selection .children-wrap { display: flex; }
+
+  .child-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--color-border-light);
+    border-radius: 8px;
+    cursor: pointer;
+    background: var(--color-bg-card);
+    transition: border-color 120ms, background 120ms;
+  }
+
+  .child-option:hover  { border-color: rgba(107,63,160,0.3); background: #F9F7FE; }
+  .child-option.selected { border-color: var(--color-primary); border-width: 2px; background: var(--color-primary-light); }
+
+  .child-label { font-size: 13px; font-weight: 500; color: var(--color-text-primary); flex: 1; }
+
+  .child-radio {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 120ms;
+  }
+
+  .child-option.selected .child-radio {
+    border-color: var(--color-primary);
+    border-width: 4px;
+    box-shadow: inset 0 0 0 2px var(--color-primary);
+  }
+
+  /* "Other" inline text input — hidden until "Other" option selected */
+  .other-input-wrap { margin-top: 6px; display: none; }
+  .other-input-wrap.visible { display: block; }
+
+  .other-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    border: 1.5px solid var(--color-border-input);
+    border-radius: 8px;
+    font-family: var(--font-primary);
+    font-size: 13px;
+    color: var(--color-input-text);
+    background: var(--color-bg-input);
+    outline: none;
+  }
+
+  .other-input:focus { border-color: var(--color-primary); border-width: 2px; }
+  .other-input::placeholder { color: var(--color-placeholder); }
+
+  /* ── SUBMIT BAR ── */
+  .submit-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 390px;
+    background: var(--color-bg-card);
+    border-top: 1px solid var(--color-border-light);
+    padding: 12px 16px 24px;
+    z-index: 100;
+  }
+
+  .submit-btn {
+    width: 100%;
+    height: 52px;
+    background: var(--color-primary);
+    color: #fff;
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: background 180ms, transform 100ms;
+    letter-spacing: 0.1px;
+  }
+
+  .submit-btn:hover  { background: var(--color-primary-dark); }
+  .submit-btn:active { transform: scale(0.98); }
+
+  .submit-note {
+    text-align: center;
+    font-size: 11px;
+    color: var(--color-text-disabled);
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div>
+      <span class="top-bar-label">New Referral</span>
+      <span class="top-bar-name">Refer a Homeowner</span>
+    </div>
+    <div class="top-bar-avatar">MW</div>
+  </div>
+
+  <div class="scroll-area">
+
+    <!-- SECTION 1: HOMEOWNER INFO -->
+    <div class="form-section">
+      <div class="form-section-title">Homeowner Info</div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">First name <span class="req">*</span></label>
+          <input class="field-input" type="text" placeholder="Jane">
+        </div>
+        <div class="field">
+          <label class="field-label">Last name <span class="req">*</span></label>
+          <input class="field-input" type="text" placeholder="Smith">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Email <span class="req">*</span></label>
+          <input class="field-input" type="email" placeholder="jane@email.com">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Phone <span class="req">*</span></label>
+          <input class="field-input" type="tel" placeholder="(617) 555-0100">
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: PROPERTY ADDRESS -->
+    <div class="form-section">
+      <div class="form-section-title">Property Address</div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Street address <span class="req">*</span></label>
+          <input class="field-input" type="text" placeholder="123 Main Street" autocomplete="street-address">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field" style="flex:2">
+          <label class="field-label">City <span class="req">*</span></label>
+          <input class="field-input" type="text" placeholder="Boston">
+        </div>
+        <div class="field" style="flex:1">
+          <label class="field-label">State <span class="req">*</span></label>
+          <input class="field-input" type="text" placeholder="MA" maxlength="2">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field" style="max-width:140px;">
+          <label class="field-label">ZIP <span class="req">*</span></label>
+          <input class="field-input" type="text" placeholder="02101" inputmode="numeric" maxlength="5">
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: USE OF FUNDS -->
+    <!--
+      ACCORDION BEHAVIOR:
+      - Two parent radio cards that expand to show child options
+      - Tapping parent toggles expanded state
+      - Selecting child: marks parent as has-selection, collapses it, shows pill
+      - Selecting child in one parent clears the other parent's selection
+      - "Other" child selection reveals an inline text input
+    -->
+    <div class="form-section">
+      <div class="form-section-title">Use of Funds <span class="req">*</span></div>
+      <div class="use-case-group">
+
+        <!-- PARENT: HOME REPAIR / RENOVATION -->
+        <div class="parent-card" id="card-reno">
+          <button class="parent-trigger" onclick="toggleParent('reno')" type="button">
+            <span class="parent-icon">🔨</span>
+            <span class="parent-text">
+              <span class="parent-label">Home Repair / Renovation</span>
+              <span class="parent-sublabel">Improvements, repairs, or additions</span>
+            </span>
+            <span class="selected-indicator" id="reno-selected" style="display:none"></span>
+            <span class="parent-chevron">›</span>
+          </button>
+          <div class="children-wrap" id="children-reno">
+            <div class="child-option" onclick="selectChild('reno','Roof replacement')"><span class="child-radio"></span><span class="child-label">Roof replacement</span></div>
+            <div class="child-option" onclick="selectChild('reno','Kitchen remodel')"><span class="child-radio"></span><span class="child-label">Kitchen remodel</span></div>
+            <div class="child-option" onclick="selectChild('reno','Bathroom remodel')"><span class="child-radio"></span><span class="child-label">Bathroom remodel</span></div>
+            <div class="child-option" onclick="selectChild('reno','Addition / expansion')"><span class="child-radio"></span><span class="child-label">Addition / expansion</span></div>
+            <div class="child-option" onclick="selectChild('reno','Basement finish')"><span class="child-radio"></span><span class="child-label">Basement finish</span></div>
+            <div class="child-option" onclick="selectChild('reno','Patio / deck')"><span class="child-radio"></span><span class="child-label">Patio / deck</span></div>
+            <div class="child-option" onclick="selectChild('reno','Siding / exterior')"><span class="child-radio"></span><span class="child-label">Siding / exterior</span></div>
+            <div class="child-option" onclick="selectChild('reno','HVAC / systems')"><span class="child-radio"></span><span class="child-label">HVAC / systems</span></div>
+            <div class="child-option" onclick="selectChild('reno','Other')"><span class="child-radio"></span><span class="child-label">Other repair or renovation</span></div>
+            <div class="other-input-wrap" id="reno-other-input">
+              <input class="other-input" placeholder="Describe the project...">
+            </div>
+          </div>
+        </div>
+
+        <!-- PARENT: INVESTMENT CAPITAL -->
+        <div class="parent-card" id="card-invest">
+          <button class="parent-trigger" onclick="toggleParent('invest')" type="button">
+            <span class="parent-icon">💼</span>
+            <span class="parent-text">
+              <span class="parent-label">Investment Capital</span>
+              <span class="parent-sublabel">Funding a property purchase or business goal</span>
+            </span>
+            <span class="selected-indicator" id="invest-selected" style="display:none"></span>
+            <span class="parent-chevron">›</span>
+          </button>
+          <div class="children-wrap" id="children-invest">
+            <div class="child-option" onclick="selectChild('invest','Down payment on investment property')"><span class="child-radio"></span><span class="child-label">Down payment on investment property</span></div>
+            <div class="child-option" onclick="selectChild('invest','Portfolio expansion (multi-family)')"><span class="child-radio"></span><span class="child-label">Portfolio expansion (multi-family)</span></div>
+            <div class="child-option" onclick="selectChild('invest','Fix & flip funding')"><span class="child-radio"></span><span class="child-label">Fix &amp; flip funding</span></div>
+            <div class="child-option" onclick="selectChild('invest','Debt payoff / refinance')"><span class="child-radio"></span><span class="child-label">Debt payoff / refinance</span></div>
+            <div class="child-option" onclick="selectChild('invest','Business funding')"><span class="child-radio"></span><span class="child-label">Business funding</span></div>
+            <div class="child-option" onclick="selectChild('invest','Other')"><span class="child-radio"></span><span class="child-label">Other investment use</span></div>
+            <div class="other-input-wrap" id="invest-other-input">
+              <input class="other-input" placeholder="Describe the goal...">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 4: NOTES -->
+    <div class="form-section">
+      <div class="form-section-title">Additional Notes</div>
+      <div class="field">
+        <label class="field-label">Notes <span style="color:var(--color-text-disabled);font-weight:400;">(optional)</span></label>
+        <textarea class="field-textarea" placeholder="Any context that would help the Hometap team — project scope, timeline, or anything the homeowner mentioned…"></textarea>
+      </div>
+    </div>
+
+  </div><!-- /scroll-area -->
+
+  <!-- STICKY SUBMIT BAR -->
+  <div class="submit-bar">
+    <button class="submit-btn" type="submit">Submit Referral</button>
+    <div class="submit-note">🔒 Your client's information is encrypted and secure</div>
+  </div>
+
+</div>
+
+<script>
+  // ── USE CASE ACCORDION LOGIC ──
+  const state = { expanded: null, selectedParent: null, selected: null };
+
+  function toggleParent(id) {
+    const card = document.getElementById('card-' + id);
+    if (state.selectedParent === id) return; // can't collapse a selected card
+    if (state.expanded === id) {
+      card.classList.remove('expanded');
+      state.expanded = null;
+    } else {
+      // Collapse previously expanded card
+      if (state.expanded) {
+        const prev = document.getElementById('card-' + state.expanded);
+        if (prev && !prev.classList.contains('has-selection')) {
+          prev.classList.remove('expanded');
+        }
+      }
+      card.classList.add('expanded');
+      state.expanded = id;
+    }
+  }
+
+  function selectChild(parentId, value) {
+    // Deselect all children in this parent
+    const allChildren = document.querySelectorAll('#children-' + parentId + ' .child-option');
+    allChildren.forEach(c => c.classList.remove('selected'));
+
+    // Select the clicked child
+    allChildren.forEach(opt => {
+      if (opt.getAttribute('onclick') === "selectChild('" + parentId + "','" + value + "')") {
+        opt.classList.add('selected');
+      }
+    });
+
+    // Handle "Other" inline input visibility
+    const otherInput = document.getElementById(parentId + '-other-input');
+    if (value === 'Other') {
+      otherInput.classList.add('visible');
+      otherInput.querySelector('input').focus();
+    } else {
+      otherInput.classList.remove('visible');
+    }
+
+    // Update parent card state
+    const card = document.getElementById('card-' + parentId);
+    card.classList.remove('expanded');
+    card.classList.add('has-selection');
+
+    // Clear the other parent's selection if it had one
+    const otherParentId = parentId === 'reno' ? 'invest' : 'reno';
+    const otherCard = document.getElementById('card-' + otherParentId);
+    if (otherCard.classList.contains('has-selection')) {
+      otherCard.classList.remove('has-selection');
+      otherCard.classList.remove('expanded');
+      document.getElementById(otherParentId + '-selected').style.display = 'none';
+      document.querySelectorAll('#children-' + otherParentId + ' .child-option').forEach(c => c.classList.remove('selected'));
+      document.getElementById(otherParentId + '-other-input').classList.remove('visible');
+    }
+
+    // Show selection indicator pill in parent header
+    const label = value.length > 18 ? value.substring(0, 16) + '…' : value;
+    const indicator = document.getElementById(parentId + '-selected');
+    indicator.textContent = label;
+    indicator.style.display = 'inline-flex';
+
+    // Update state
+    state.selectedParent = parentId;
+    state.selected = value;
+    state.expanded = null;
+  }
+</script>
+
+</body>
+</html>

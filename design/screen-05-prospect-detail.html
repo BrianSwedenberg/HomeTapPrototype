@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Screen 05 — Prospect Detail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-primary:        #6B3FA0;
+    --color-primary-dark:   #4E2D7A;
+    --color-primary-light:  #EDE7F6;
+    --color-text-primary:   #1A1A2E;
+    --color-text-secondary: #5C5C7A;
+    --color-text-disabled:  #AAAAAA;
+    --color-border-light:   #EEECF6;
+    --color-bg-page:        #F7F6FC;
+    --color-bg-card:        #FFFFFF;
+    --color-success:        #2E7D32;
+    --font-primary:         'DM Sans', system-ui, sans-serif;
+    --radius-md:            10px;
+    --radius-lg:            16px;
+    --radius-full:          9999px;
+    --shadow-card:          0 2px 12px rgba(107,63,160,0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-primary);
+    background: var(--color-bg-page);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 390px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-page);
+  }
+
+  /* ── TOP BAR ── */
+  .top-bar {
+    background: var(--color-bg-card);
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    font-family: var(--font-primary);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0;
+    flex-shrink: 0;
+    transition: color 150ms;
+  }
+
+  .back-btn:hover { color: var(--color-primary); }
+
+  .top-bar-title { font-size: 17px; font-weight: 700; color: var(--color-text-primary); letter-spacing: -0.2px; flex: 1; }
+  .top-bar-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--color-primary-light); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--color-primary); flex-shrink: 0; }
+
+  /* ── SCROLL AREA ── */
+  .scroll-area { flex: 1; padding: 16px 16px 100px; overflow-y: auto; }
+
+  /* ── STATUS HERO ── */
+  .status-hero {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-card);
+    border: 1.5px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .status-hero-label { font-size: 11px; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.6px; display: block; margin-bottom: 4px; }
+
+  .status-badge { display: inline-flex; align-items: center; border-radius: var(--radius-full); padding: 4px 12px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .badge-prequal { background: #E3F2FD; color: #1565C0; }
+
+  .status-updated { font-size: 11px; color: var(--color-text-disabled); margin-top: 4px; display: block; }
+
+  /* Pulsing "next step" indicator */
+  .next-step-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--color-bg-page);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-full);
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    max-width: 160px;
+    flex-shrink: 0;
+  }
+
+  .next-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    flex-shrink: 0;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+
+  /* ── SECTION TITLES ── */
+  .section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+
+  /* ── LEAD SUMMARY CARD ── */
+  .summary-card {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--color-border-light);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+
+  .summary-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #F5F4FA;
+  }
+
+  .summary-row:last-child { border-bottom: none; }
+
+  .summary-icon  { font-size: 14px; flex-shrink: 0; margin-top: 1px; width: 18px; text-align: center; }
+
+  .summary-col   { display: flex; flex-direction: column; gap: 1px; flex: 1; }
+  .summary-label { font-size: 11px; color: var(--color-text-disabled); font-weight: 500; }
+  .summary-value { font-size: 13px; color: var(--color-text-primary); font-weight: 500; line-height: 1.4; }
+
+  .usecase-pill  { display: inline-flex; font-size: 11px; color: var(--color-primary); background: var(--color-primary-light); border-radius: var(--radius-full); padding: 2px 8px; font-weight: 600; margin-top: 2px; }
+
+  /* ── TIMELINE CARD ── */
+  /*
+    TIMELINE LOGIC:
+    - Completed steps: filled purple dot with white checkmark
+    - Pending steps: hollow dot, muted grey label and italic "Pending" date
+    - Connector line runs between steps via ::after pseudo-element
+    - In React: derive completed/pending from referral_status_history table
+      (completed = status_id <= current status_id)
+  */
+  .timeline-card {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--color-border-light);
+    box-shadow: var(--shadow-card);
+    padding: 8px 0;
+  }
+
+  .timeline-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 16px;
+    position: relative;
+  }
+
+  /* Connector line between steps */
+  .timeline-row:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 27px;
+    top: 38px;
+    bottom: 0;
+    width: 1.5px;
+    background: var(--color-border-light);
+  }
+
+  .timeline-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .timeline-dot.done    { background: var(--color-primary); }
+  .timeline-dot.pending { background: #F0EDF8; border: 1.5px solid #D0C8E8; }
+
+  .timeline-content { flex: 1; }
+  .timeline-status  { font-size: 13px; font-weight: 600; color: var(--color-text-primary); display: block; margin-bottom: 1px; }
+  .timeline-status.muted { color: var(--color-text-disabled); }
+  .timeline-date    { font-size: 11px; color: var(--color-text-disabled); }
+  .timeline-date.pending { color: #C4C2D4; font-style: italic; }
+
+  /* ── BOTTOM NAV + FAB ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 390px;
+    background: var(--color-bg-card);
+    border-top: 1px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 8px 0 16px;
+    z-index: 100;
+    height: 64px;
+  }
+
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; flex: 1; padding: 4px 0; }
+  .nav-icon  { width: 22px; height: 22px; }
+  .nav-label { font-size: 10px; font-weight: 500; color: var(--color-text-disabled); }
+  .nav-item.active .nav-label { color: var(--color-primary); }
+
+  .fab {
+    position: fixed;
+    bottom: 80px;
+    right: calc(50% - 195px + 16px);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(107,63,160,0.45);
+    cursor: pointer;
+    z-index: 200;
+    border: none;
+    transition: background 180ms, transform 100ms;
+  }
+
+  .fab:hover { background: var(--color-primary-dark); transform: scale(1.05); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOP BAR — back button returns to Pipeline -->
+  <div class="top-bar">
+    <button class="back-btn" type="button">‹ Pipeline</button>
+    <span class="top-bar-title">James Thornton</span>
+    <div class="top-bar-avatar">MW</div>
+  </div>
+
+  <div class="scroll-area">
+
+    <!-- STATUS HERO -->
+    <div class="status-hero">
+      <div>
+        <span class="status-hero-label">Current status</span>
+        <span class="status-badge badge-prequal">Pre-Qual Complete</span>
+        <span class="status-updated">Updated Apr 12 · 4:31 PM</span>
+      </div>
+      <div class="next-step-pill">
+        <span class="next-dot"></span>
+        App in progress
+      </div>
+    </div>
+
+    <!-- LEAD SUMMARY -->
+    <div class="section-title">Lead Summary</div>
+    <div class="summary-card">
+      <div class="summary-row">
+        <span class="summary-icon">👤</span>
+        <div class="summary-col">
+          <span class="summary-label">Homeowner</span>
+          <span class="summary-value">James Thornton</span>
+        </div>
+      </div>
+      <div class="summary-row">
+        <span class="summary-icon">📍</span>
+        <div class="summary-col">
+          <span class="summary-label">Property address</span>
+          <span class="summary-value">14 Maple Ave, Boston, MA 02101</span>
+        </div>
+      </div>
+      <div class="summary-row">
+        <span class="summary-icon">💰</span>
+        <div class="summary-col">
+          <span class="summary-label">Use of funds</span>
+          <span class="usecase-pill">Renovation</span>
+        </div>
+      </div>
+      <div class="summary-row">
+        <span class="summary-icon">📝</span>
+        <div class="summary-col">
+          <span class="summary-label">Notes</span>
+          <span class="summary-value">Kitchen + bath remodel, $85k project scope.</span>
+        </div>
+      </div>
+      <div class="summary-row">
+        <span class="summary-icon">📅</span>
+        <div class="summary-col">
+          <span class="summary-label">Referred on</span>
+          <span class="summary-value">Apr 8, 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATUS TIMELINE -->
+    <!--
+      DATA SOURCE: referral_status_history table, filtered by lead_id, ordered by changed_at ASC.
+      All statuses are shown — completed ones pulled from history, pending ones derived from
+      the full referral_statuses table (all statuses with sort_order > current status sort_order).
+    -->
+    <div class="section-title">Status Timeline</div>
+    <div class="timeline-card">
+
+      <!-- COMPLETED STEPS -->
+      <div class="timeline-row">
+        <div class="timeline-dot done">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M2 5l2.5 2.5 3.5-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="timeline-content">
+          <span class="timeline-status">Submitted</span>
+          <span class="timeline-date">Apr 8 · 2:14 PM</span>
+        </div>
+      </div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot done">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M2 5l2.5 2.5 3.5-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="timeline-content">
+          <span class="timeline-status">Contacted</span>
+          <span class="timeline-date">Apr 9 · 10:22 AM</span>
+        </div>
+      </div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot done">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M2 5l2.5 2.5 3.5-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="timeline-content">
+          <span class="timeline-status">Pre-Qual Complete</span>
+          <span class="timeline-date">Apr 12 · 4:31 PM</span>
+        </div>
+      </div>
+
+      <!-- PENDING STEPS -->
+      <div class="timeline-row">
+        <div class="timeline-dot pending"></div>
+        <div class="timeline-content">
+          <span class="timeline-status muted">Application Started</span>
+          <span class="timeline-date pending">Pending</span>
+        </div>
+      </div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot pending"></div>
+        <div class="timeline-content">
+          <span class="timeline-status muted">Application Approved</span>
+          <span class="timeline-date pending">Pending</span>
+        </div>
+      </div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot pending"></div>
+        <div class="timeline-content">
+          <span class="timeline-status muted">Closed</span>
+          <span class="timeline-date pending">Pending</span>
+        </div>
+      </div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot pending"></div>
+        <div class="timeline-content">
+          <span class="timeline-status muted">Paid</span>
+          <!-- Always show the fee amount on the final step so partner knows what they're working toward -->
+          <span class="timeline-date pending">Pending · $500 referral fee</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!--
+      FUTURE FEATURES (flagged, not yet built):
+      - application_rejected state: show a gentle explanation card
+        ("This property didn't meet Hometap's investment criteria at this time")
+      - paid state: show a celebration moment with green "Payment sent" confirmation
+        and the exact fee amount
+    -->
+
+  </div>
+
+  <!-- FAB -->
+  <button class="fab" aria-label="Refer a new homeowner">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <!-- BOTTOM NAV — Pipeline tab active (came from Pipeline) -->
+  <nav class="bottom-nav">
+    <div class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M12 5v14M5 12h14" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-label">Refer</span>
+    </div>
+    <div class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="3" width="7" height="7" rx="1.5" fill="#6B3FA0"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.5" fill="#6B3FA0"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.5" fill="#6B3FA0"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5" fill="#6B3FA0"/>
+      </svg>
+      <span class="nav-label" style="color:#6B3FA0;">Pipeline</span>
+    </div>
+    <div class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="8" r="4" stroke="#AAAAAA" stroke-width="1.8"/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#AAAAAA" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-label">Account</span>
+    </div>
+  </nav>
+
+</div>
+</body>
+</html>

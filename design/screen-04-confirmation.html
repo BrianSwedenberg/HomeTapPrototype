@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Screen 04 — Referral Confirmation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-primary:        #6B3FA0;
+    --color-primary-dark:   #4E2D7A;
+    --color-primary-light:  #EDE7F6;
+    --color-teal:           #00B3A4;
+    --color-text-primary:   #1A1A2E;
+    --color-text-secondary: #5C5C7A;
+    --color-text-disabled:  #AAAAAA;
+    --color-border-light:   #EEECF6;
+    --color-bg-page:        #F7F6FC;
+    --color-bg-card:        #FFFFFF;
+    --color-success:        #2E7D32;
+    --color-success-bg:     #E8F5E9;
+    --color-warning-bg:     #FFF3E0;
+    --color-warning:        #E65100;
+    --font-primary:         'DM Sans', system-ui, sans-serif;
+    --radius-md:            10px;
+    --radius-lg:            16px;
+    --radius-full:          9999px;
+    --shadow-card:          0 2px 12px rgba(107,63,160,0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-primary);
+    background: var(--color-bg-page);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 390px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-page);
+  }
+
+  /* ── TOP BAR ── */
+  .top-bar {
+    background: var(--color-bg-card);
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .top-bar-label { font-size: 12px; color: var(--color-text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.6px; display: block; }
+  .top-bar-name  { font-size: 18px; font-weight: 700; color: var(--color-text-primary); letter-spacing: -0.3px; display: block; }
+  .top-bar-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--color-primary-light); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--color-primary); flex-shrink: 0; }
+
+  /* ── SCROLL AREA ── */
+  .scroll-area {
+    flex: 1;
+    padding: 32px 20px 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+  }
+
+  /* ── SUCCESS ANIMATION ──
+     Pop animation plays once on mount.
+     In React: use a useEffect with a CSS class toggle, or framer-motion scale animation.
+  */
+  .success-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--color-success-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    animation: pop 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes pop {
+    from { transform: scale(0.5); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+
+  /* ── HEADLINE + SUBTEXT ── */
+  .confirm-headline {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    letter-spacing: -0.3px;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .confirm-sub {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    text-align: center;
+    line-height: 1.55;
+    margin-bottom: 28px;
+    max-width: 280px;
+  }
+
+  /* ── REFERRAL SUMMARY CARD ── */
+  .referral-summary {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--color-border-light);
+    padding: 16px 18px;
+    width: 100%;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .referral-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .referral-info    { flex: 1; }
+  .referral-name    { font-size: 15px; font-weight: 700; color: var(--color-text-primary); display: block; margin-bottom: 2px; }
+  .referral-address { font-size: 12px; color: var(--color-text-secondary); display: block; margin-bottom: 4px; }
+  .referral-usecase { display: inline-flex; font-size: 11px; color: var(--color-primary); background: var(--color-primary-light); border-radius: var(--radius-full); padding: 2px 8px; font-weight: 600; }
+
+  .referral-status  { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--color-success); font-weight: 600; flex-shrink: 0; }
+  .status-dot       { width: 7px; height: 7px; border-radius: 50%; background: var(--color-success); }
+
+  /* ── SECTION TITLE ── */
+  .next-steps-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 14px;
+    align-self: flex-start;
+  }
+
+  /* ── STEPS CARD ── */
+  .steps-card {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--color-border-light);
+    padding: 8px 0;
+    width: 100%;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 18px;
+    position: relative;
+  }
+
+  /* Connector line between steps */
+  .step-row:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 32px;
+    top: 46px;
+    bottom: 0;
+    width: 1.5px;
+    background: var(--color-border-light);
+  }
+
+  /* Step 1 number is highlighted (active) — it's the current pending action */
+  .step-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .step-number.highlight {
+    background: var(--color-primary);
+    color: #fff;
+  }
+
+  .step-content  { flex: 1; padding-top: 3px; }
+  .step-title    { font-size: 14px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 2px; display: block; }
+  .step-desc     { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; display: block; }
+
+  /* "Waiting on Jane" tag — shown on step 1 only */
+  .step-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-warning);
+    background: var(--color-warning-bg);
+    border-radius: var(--radius-full);
+    padding: 2px 8px;
+    margin-top: 5px;
+  }
+
+  /* ── CTA BUTTONS ── */
+  .btn-primary {
+    width: 100%;
+    height: 52px;
+    background: var(--color-primary);
+    color: #fff;
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: background 180ms, transform 100ms;
+    margin-bottom: 12px;
+  }
+
+  .btn-primary:hover  { background: var(--color-primary-dark); }
+  .btn-primary:active { transform: scale(0.98); }
+
+  .btn-secondary {
+    width: 100%;
+    height: 52px;
+    background: transparent;
+    color: var(--color-primary);
+    font-family: var(--font-primary);
+    font-size: 15px;
+    font-weight: 600;
+    border: 1.5px solid #D0C8E8;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: background 180ms, border-color 180ms;
+  }
+
+  .btn-secondary:hover { background: #F5F0FC; border-color: var(--color-primary); }
+
+  /* ── BOTTOM NAV + FAB ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 390px;
+    background: var(--color-bg-card);
+    border-top: 1px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 8px 0 16px;
+    z-index: 100;
+    height: 64px;
+  }
+
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; flex: 1; padding: 4px 0; }
+  .nav-icon  { width: 22px; height: 22px; }
+  .nav-label { font-size: 10px; font-weight: 500; color: var(--color-text-disabled); }
+
+  .fab {
+    position: fixed;
+    bottom: 80px;
+    right: calc(50% - 195px + 16px);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(107,63,160,0.45);
+    cursor: pointer;
+    z-index: 200;
+    border: none;
+    transition: background 180ms, transform 100ms;
+  }
+
+  .fab:hover { background: var(--color-primary-dark); transform: scale(1.05); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div>
+      <span class="top-bar-label">Referral Submitted</span>
+      <span class="top-bar-name">Marcus Webb</span>
+    </div>
+    <div class="top-bar-avatar">MW</div>
+  </div>
+
+  <div class="scroll-area">
+
+    <!-- SUCCESS ICON — pop animation on mount -->
+    <div class="success-circle">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <path d="M9 16.5l4.5 4.5 9-9" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="confirm-headline">Referral submitted!</div>
+    <div class="confirm-sub">Jane Smith has been referred to Hometap. Here's what happens next.</div>
+
+    <!-- REFERRAL SUMMARY -->
+    <div class="referral-summary">
+      <div class="referral-avatar">JS</div>
+      <div class="referral-info">
+        <span class="referral-name">Jane Smith</span>
+        <span class="referral-address">123 Main Street, Boston, MA 02101</span>
+        <span class="referral-usecase">Kitchen remodel</span>
+      </div>
+      <div class="referral-status">
+        <span class="status-dot"></span>
+        Submitted
+      </div>
+    </div>
+
+    <div class="next-steps-title">What happens next</div>
+
+    <!-- WHAT HAPPENS NEXT — 4 steps -->
+    <div class="steps-card">
+
+      <!-- STEP 1: Active — waiting on homeowner to confirm -->
+      <div class="step-row">
+        <div class="step-number highlight">1</div>
+        <div class="step-content">
+          <span class="step-title">Jane confirms her interest</span>
+          <span class="step-desc">She'll receive a text with a link to confirm she's interested in learning more about Hometap. This step is required before anyone reaches out.</span>
+          <span class="step-tag">⏳ Waiting on Jane</span>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-row">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <span class="step-title">Hometap Investment Manager calls</span>
+          <span class="step-desc">Once Jane confirms, a Hometap Investment Manager will call her within 24 hours to walk her through her options.</span>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-row">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <span class="step-title">Jane completes her application</span>
+          <span class="step-desc">With her Investment Manager's guidance, Jane will complete her Hometap application and receive approval.</span>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step-row">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <span class="step-title">Investment closes, you get paid</span>
+          <span class="step-desc">Once Jane's investment closes, you'll receive a $500 referral fee — tracked right here in your pipeline.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTAs -->
+    <button class="btn-primary">View in Pipeline</button>
+    <button class="btn-secondary">Refer another homeowner</button>
+
+  </div>
+
+  <!-- FAB -->
+  <button class="fab" aria-label="Refer a new homeowner">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <!-- BOTTOM NAV — no active tab on this screen (transitional state) -->
+  <nav class="bottom-nav">
+    <div class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M12 5v14M5 12h14" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-label">Refer</span>
+    </div>
+    <div class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="3" width="7" height="7" rx="1.5" fill="#AAAAAA"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.5" fill="#AAAAAA"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.5" fill="#AAAAAA"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5" fill="#AAAAAA"/>
+      </svg>
+      <span class="nav-label">Pipeline</span>
+    </div>
+    <div class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="8" r="4" stroke="#AAAAAA" stroke-width="1.8"/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#AAAAAA" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-label">Account</span>
+    </div>
+  </nav>
+
+</div>
+</body>
+</html>

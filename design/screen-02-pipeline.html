@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Screen 02 — Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-primary:        #6B3FA0;
+    --color-primary-dark:   #4E2D7A;
+    --color-primary-light:  #EDE7F6;
+    --color-teal:           #00B3A4;
+    --color-teal-light:     #E0F7F5;
+    --color-text-primary:   #1A1A2E;
+    --color-text-secondary: #5C5C7A;
+    --color-text-disabled:  #AAAAAA;
+    --color-border:         #D0D0E0;
+    --color-border-light:   #EEECF6;
+    --color-bg-page:        #F7F6FC;
+    --color-bg-card:        #FFFFFF;
+    --font-primary:         'DM Sans', system-ui, sans-serif;
+    --radius-md:            10px;
+    --radius-lg:            16px;
+    --radius-full:          9999px;
+    --shadow-card:          0 2px 12px rgba(107,63,160,0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-primary);
+    background: var(--color-bg-page);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  /* ── MOBILE SHELL ── */
+  .app {
+    width: 100%;
+    max-width: 390px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: var(--color-bg-page);
+  }
+
+  /* ── TOP BAR ── */
+  .top-bar {
+    background: var(--color-bg-card);
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .top-bar-label {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    display: block;
+  }
+
+  .top-bar-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    letter-spacing: -0.3px;
+    display: block;
+  }
+
+  .top-bar-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--color-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  /* ── SCROLL AREA ── */
+  .scroll-area {
+    flex: 1;
+    padding: 16px 16px 100px;
+    overflow-y: auto;
+  }
+
+  /* ── METRIC TILES ── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .metric-tile {
+    background: var(--color-bg-card);
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .metric-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+  }
+
+  .metric-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+
+  .metric-value.purple { color: var(--color-primary); }
+  .metric-value.teal   { color: #00897B; }
+  .metric-value.green  { color: #2E7D32; }
+
+  .metric-sub {
+    font-size: 11px;
+    color: var(--color-text-disabled);
+    margin-top: 4px;
+  }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .section-title { font-size: 15px; font-weight: 700; color: var(--color-text-primary); }
+
+  .section-count {
+    font-size: 12px;
+    color: var(--color-primary);
+    background: var(--color-primary-light);
+    border-radius: var(--radius-full);
+    padding: 2px 8px;
+    font-weight: 600;
+  }
+
+  /* ── LEAD CARDS ── */
+  .lead-card {
+    background: var(--color-bg-card);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 12px rgba(107,63,160,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    cursor: pointer;
+    transition: box-shadow 150ms;
+    border: 1.5px solid transparent;
+  }
+
+  .lead-card:hover {
+    box-shadow: 0 4px 20px rgba(107,63,160,0.12);
+    border-color: rgba(107,63,160,0.15);
+  }
+
+  .lead-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .lead-name    { font-size: 15px; font-weight: 700; color: var(--color-text-primary); }
+  .lead-address { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; line-height: 1.4; }
+
+  .lead-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .lead-meta { display: flex; align-items: center; gap: 8px; }
+
+  .lead-usecase {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    background: var(--color-bg-page);
+    border-radius: var(--radius-full);
+    padding: 3px 8px;
+    font-weight: 500;
+    border: 1px solid var(--color-border-light);
+  }
+
+  .lead-date  { font-size: 11px; color: var(--color-text-disabled); }
+  .lead-chevron { color: var(--color-border); font-size: 18px; line-height: 1; flex-shrink: 0; }
+
+  /* ── STATUS BADGES ── */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: var(--radius-full);
+    padding: 3px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .badge-submitted    { background: #EDE7F6; color: #6B3FA0; }
+  .badge-contacted    { background: #E0F7F5; color: #00695C; }
+  .badge-prequal      { background: #E3F2FD; color: #1565C0; }
+  .badge-app-started  { background: #FFF3E0; color: #E65100; }
+  .badge-app-approved { background: #E8F5E9; color: #2E7D32; }
+  .badge-app-rejected { background: #FFEBEE; color: #C62828; }
+  .badge-closed       { background: #E8EAF6; color: #283593; }
+  .badge-paid         { background: #E8F5E9; color: #1B5E20; }
+
+  /* ── FAB ── */
+  /* NOTE: In the React app this will be position:fixed.
+     In this static HTML it is position:absolute within the app shell. */
+  .fab {
+    position: fixed;
+    bottom: 80px;
+    right: calc(50% - 195px + 16px);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(107,63,160,0.45);
+    cursor: pointer;
+    z-index: 200;
+    transition: background 180ms, transform 100ms;
+    border: none;
+  }
+
+  .fab:hover { background: var(--color-primary-dark); transform: scale(1.05); }
+  .fab:active { transform: scale(0.96); }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 390px;
+    background: var(--color-bg-card);
+    border-top: 1px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 8px 0 16px;
+    z-index: 100;
+    height: 64px;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    flex: 1;
+    padding: 4px 0;
+  }
+
+  .nav-icon  { width: 22px; height: 22px; }
+  .nav-label { font-size: 10px; font-weight: 500; color: var(--color-text-disabled); }
+  .nav-item.active .nav-label { color: var(--color-primary); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div>
+      <span class="top-bar-label">Partner Portal</span>
+      <span class="top-bar-name">Marcus Webb</span>
+    </div>
+    <div class="top-bar-avatar">MW</div>
+  </div>
+
+  <!-- SCROLLABLE CONTENT -->
+  <div class="scroll-area">
+
+    <!-- METRIC TILES -->
+    <div class="metrics-grid">
+      <div class="metric-tile">
+        <div class="metric-label">Total Referred</div>
+        <div class="metric-value purple">4</div>
+        <div class="metric-sub">All time</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-label">In Progress</div>
+        <div class="metric-value">2</div>
+        <div class="metric-sub">Active leads</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-label">Closed</div>
+        <div class="metric-value teal">1</div>
+        <div class="metric-sub">Investments funded</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-label">Earned</div>
+        <div class="metric-value green">$500</div>
+        <div class="metric-sub">Referral fees paid</div>
+      </div>
+    </div>
+
+    <!-- LEAD LIST -->
+    <div class="section-header">
+      <span class="section-title">Your Referrals</span>
+      <span class="section-count">4 leads</span>
+    </div>
+
+    <!-- Lead: James Thornton — Pre-Qual Complete -->
+    <div class="lead-card">
+      <div class="lead-card-top">
+        <div>
+          <div class="lead-name">James Thornton</div>
+          <div class="lead-address">14 Maple Ave, Boston, MA 02101</div>
+        </div>
+        <span class="status-badge badge-prequal">Pre-Qual Complete</span>
+      </div>
+      <div class="lead-card-bottom">
+        <div class="lead-meta">
+          <span class="lead-usecase">Renovation</span>
+          <span class="lead-date">Apr 8</span>
+        </div>
+        <span class="lead-chevron">›</span>
+      </div>
+    </div>
+
+    <!-- Lead: Linda Castillo — Contacted -->
+    <div class="lead-card">
+      <div class="lead-card-top">
+        <div>
+          <div class="lead-name">Linda Castillo</div>
+          <div class="lead-address">88 Birchwood Dr, Cambridge, MA</div>
+        </div>
+        <span class="status-badge badge-contacted">Contacted</span>
+      </div>
+      <div class="lead-card-bottom">
+        <div class="lead-meta">
+          <span class="lead-usecase">Renovation</span>
+          <span class="lead-date">Apr 12</span>
+        </div>
+        <span class="lead-chevron">›</span>
+      </div>
+    </div>
+
+    <!-- Lead: Omar Hassan — App Approved -->
+    <div class="lead-card">
+      <div class="lead-card-top">
+        <div>
+          <div class="lead-name">Omar Hassan</div>
+          <div class="lead-address">3 Clearwater Rd, Somerville, MA</div>
+        </div>
+        <span class="status-badge badge-app-approved">App Approved</span>
+      </div>
+      <div class="lead-card-bottom">
+        <div class="lead-meta">
+          <span class="lead-usecase">Renovation</span>
+          <span class="lead-date">Mar 29</span>
+        </div>
+        <span class="lead-chevron">›</span>
+      </div>
+    </div>
+
+    <!-- Lead: Priya Nair — Submitted -->
+    <div class="lead-card">
+      <div class="lead-card-top">
+        <div>
+          <div class="lead-name">Priya Nair</div>
+          <div class="lead-address">201 Elm Street, Newton, MA</div>
+        </div>
+        <span class="status-badge badge-submitted">Submitted</span>
+      </div>
+      <div class="lead-card-bottom">
+        <div class="lead-meta">
+          <span class="lead-usecase">Renovation</span>
+          <span class="lead-date">Apr 19</span>
+        </div>
+        <span class="lead-chevron">›</span>
+      </div>
+    </div>
+
+  </div><!-- /scroll-area -->
+
+  <!-- FAB — bottom right, floating above nav bar -->
+  <button class="fab" aria-label="Refer a new homeowner">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <div class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M12 5v14M5 12h14" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-label">Refer</span>
+    </div>
+    <!-- Pipeline tab — ACTIVE state -->
+    <div class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="3" width="7" height="7" rx="1.5" fill="#6B3FA0"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.5" fill="#6B3FA0"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.5" fill="#6B3FA0"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5" fill="#6B3FA0"/>
+      </svg>
+      <span class="nav-label" style="color:#6B3FA0;">Pipeline</span>
+    </div>
+    <div class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="8" r="4" stroke="#AAAAAA" stroke-width="1.8"/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#AAAAAA" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-label">Account</span>
+    </div>
+  </nav>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hometap Lead Form — Component Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* Primary */
+  --color-primary:        #6B3FA0;
+  --color-primary-dark:   #4E2D7A;
+  --color-primary-light:  #EDE7F6;
+  --color-teal:           #00B3A4;
+  --color-teal-light:     #E0F7F5;
+
+  /* Text */
+  --color-text-primary:   #1A1A2E;
+  --color-text-secondary: #5C5C7A;
+  --color-text-disabled:  #AAAAAA;
+
+  /* Borders & Backgrounds */
+  --color-border:         #D0D0E0;
+  --color-border-focus:   #6B3FA0;
+  --color-bg-page:        #F7F6FC;
+  --color-bg-card:        #FFFFFF;
+  --color-bg-selected:    #EDE7F6;
+
+  /* Semantic */
+  --color-error:          #C62828;
+  --color-error-bg:       #FFEBEE;
+  --color-success:        #2E7D32;
+  --color-success-bg:     #E8F5E9;
+  --color-warning:        #E65100;
+  --color-rating:         #F4B400;
+
+  /* Typography */
+  --font-primary: 'DM Sans', system-ui, sans-serif;
+  --font-mono:    'DM Mono', monospace;
+
+  --text-xs:   11px;
+  --text-sm:   13px;
+  --text-base: 15px;
+  --text-md:   17px;
+  --text-lg:   20px;
+  --text-xl:   24px;
+  --text-2xl:  30px;
+  --text-3xl:  38px;
+
+  /* Spacing */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Radii */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-card:  0 4px 24px rgba(107,63,160,0.08);
+  --shadow-focus: 0 0 0 3px rgba(107,63,160,0.20);
+}
+
+/* ============================================================
+   STYLE GUIDE SHELL
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-primary);
+  background: #F0EEF8;
+  color: var(--color-text-primary);
+  font-size: var(--text-base);
+  line-height: 1.6;
+}
+
+.sg-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar Nav */
+.sg-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--color-text-primary);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: var(--space-8) var(--space-4);
+}
+
+.sg-sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-8);
+  padding: 0 var(--space-2);
+}
+
+.sg-sidebar-logo svg { width: 28px; height: 28px; }
+
+.sg-sidebar-logo-text {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: -0.3px;
+}
+
+.sg-sidebar-logo-text span { color: var(--color-teal); }
+
+.sg-nav-section { margin-bottom: var(--space-6); }
+
+.sg-nav-section-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  padding: 0 var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.sg-nav-link {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  transition: background 150ms, color 150ms;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.sg-nav-link:hover, .sg-nav-link.active {
+  background: rgba(107,63,160,0.4);
+  color: #FFFFFF;
+}
+
+/* Main Content */
+.sg-main {
+  flex: 1;
+  padding: var(--space-10) var(--space-8);
+  max-width: 960px;
+}
+
+/* Section Headers */
+.sg-page-title {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.5px;
+  margin-bottom: var(--space-2);
+}
+
+.sg-page-sub {
+  font-size: var(--text-md);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-12);
+}
+
+.sg-section {
+  margin-bottom: var(--space-16);
+  scroll-margin-top: var(--space-6);
+}
+
+.sg-section-title {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  border-bottom: 2px solid var(--color-primary-light);
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-8);
+  letter-spacing: -0.3px;
+}
+
+.sg-subsection-title {
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+/* Component Display Card */
+.sg-component-card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  margin-bottom: var(--space-6);
+}
+
+.sg-component-demo {
+  padding: var(--space-8);
+  background: var(--color-bg-page);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.sg-component-demo.centered {
+  justify-content: center;
+}
+
+.sg-component-demo.dark {
+  background: #1A1A2E;
+}
+
+.sg-code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-5);
+  background: #1A1A2E;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.sg-code-lang {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-teal);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.sg-copy-btn {
+  font-family: var(--font-primary);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.6);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 150ms, color 150ms;
+}
+
+.sg-copy-btn:hover { background: rgba(107,63,160,0.4); color: white; }
+.sg-copy-btn.copied { color: var(--color-teal); border-color: var(--color-teal); }
+
+.sg-code-block {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: #C9D1D9;
+  background: #0D1117;
+  padding: var(--space-5);
+  overflow-x: auto;
+  white-space: pre;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+/* Syntax highlighting basics */
+.sg-code-block .tag  { color: #7EE787; }
+.sg-code-block .attr { color: #79C0FF; }
+.sg-code-block .val  { color: #A5D6FF; }
+.sg-code-block .com  { color: #8B949E; }
+.sg-code-block .css-prop { color: #79C0FF; }
+.sg-code-block .css-val  { color: #A5D6FF; }
+.sg-code-block .css-var  { color: #FFA657; }
+
+/* Note boxes */
+.sg-note {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  margin-bottom: var(--space-4);
+}
+
+.sg-note.info {
+  background: var(--color-primary-light);
+  border: 1px solid rgba(107,63,160,0.2);
+  color: var(--color-primary-dark);
+}
+
+.sg-note.success {
+  background: var(--color-success-bg);
+  border: 1px solid #A5D6A7;
+  color: var(--color-success);
+}
+
+.sg-note .sg-note-icon { font-size: 16px; flex-shrink: 0; }
+
+/* Color Swatches */
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.swatch {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.swatch-color {
+  height: 72px;
+}
+
+.swatch-info {
+  background: white;
+  padding: var(--space-3);
+}
+
+.swatch-name {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.swatch-hex {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+/* Type Scale */
+.type-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.type-meta {
+  min-width: 200px;
+  flex-shrink: 0;
+}
+
+.type-meta-name {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-teal);
+}
+
+.type-meta-detail {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+/* ============================================================
+   HOMETAP COMPONENTS (actual renderable UI)
+   ============================================================ */
+
+/* --- Button --- */
+.ht-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-full);
+  font-family: var(--font-primary);
+  font-size: var(--text-md);
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: background 180ms ease, transform 100ms ease, box-shadow 180ms ease;
+  text-decoration: none;
+  white-space: nowrap;
+  letter-spacing: 0.1px;
+}
+
+.ht-btn-primary {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.ht-btn-primary:hover {
+  background: var(--color-primary-dark);
+  box-shadow: 0 4px 16px rgba(107,63,160,0.35);
+}
+
+.ht-btn-primary:active { transform: scale(0.97); }
+
+.ht-btn-primary:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+
+.ht-btn-primary.loading {
+  background: var(--color-primary);
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.ht-btn-primary:disabled {
+  background: #C4B5D9;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.ht-btn-full { width: 100%; }
+
+.ht-btn-secondary {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1.5px solid var(--color-border);
+  font-weight: 600;
+}
+
+.ht-btn-secondary:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.ht-btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-primary);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  padding: var(--space-2) 0;
+  transition: color 150ms;
+}
+
+.ht-btn-back:hover { color: var(--color-primary); }
+
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- Text Input --- */
+.ht-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.ht-label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: 0.1px;
+}
+
+.ht-label .required { color: var(--color-error); margin-left: 2px; }
+
+.ht-input {
+  height: 52px;
+  padding: 0 var(--space-4);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  color: var(--color-text-primary);
+  background: #FFFFFF;
+  transition: border-color 150ms, box-shadow 150ms, background 150ms;
+  outline: none;
+  width: 100%;
+  -webkit-appearance: none;
+}
+
+.ht-input::placeholder { color: var(--color-text-disabled); }
+
+.ht-input:focus {
+  border-color: var(--color-border-focus);
+  border-width: 2px;
+  box-shadow: var(--shadow-focus);
+}
+
+.ht-input.error {
+  border-color: var(--color-error);
+  border-width: 2px;
+  background: var(--color-error-bg);
+}
+
+.ht-helper {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.ht-error-msg {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-error);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+/* --- Radio Card --- */
+.ht-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.ht-radio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+.ht-radio-card {
+  position: relative;
+}
+
+.ht-radio-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.ht-radio-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 14px var(--space-4);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  background: var(--color-bg-card);
+  transition: border-color 150ms, background 150ms;
+  position: relative;
+  user-select: none;
+}
+
+.ht-radio-label:hover {
+  background: #F5F0FC;
+  border-color: rgba(107,63,160,0.35);
+}
+
+.ht-radio-card input[type="radio"]:checked + .ht-radio-label {
+  border-color: var(--color-primary);
+  border-width: 2px;
+  background: var(--color-bg-selected);
+}
+
+.ht-radio-card input[type="radio"]:focus-visible + .ht-radio-label {
+  box-shadow: var(--shadow-focus);
+}
+
+.ht-radio-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-teal);
+  flex-shrink: 0;
+  font-size: 20px;
+}
+
+.ht-radio-text { flex: 1; }
+
+.ht-radio-text-main {
+  font-size: var(--text-md);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  display: block;
+}
+
+.ht-radio-text-sub {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  display: block;
+  margin-top: 1px;
+}
+
+.ht-radio-indicator {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  flex-shrink: 0;
+  transition: border-color 150ms, background 150ms;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ht-radio-card input[type="radio"]:checked + .ht-radio-label .ht-radio-indicator {
+  border-color: var(--color-primary);
+  border-width: 5px;
+  background: white;
+  box-shadow: inset 0 0 0 3px var(--color-primary);
+}
+
+/* --- Checkbox --- */
+.ht-checkbox-field {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ht-checkbox-field input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.ht-checkbox-box {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 150ms, background 150ms;
+  background: white;
+}
+
+.ht-checkbox-field input[type="checkbox"]:checked ~ .ht-checkbox-box {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.ht-checkbox-field input[type="checkbox"]:focus-visible ~ .ht-checkbox-box {
+  box-shadow: var(--shadow-focus);
+}
+
+.ht-checkmark {
+  display: none;
+}
+
+.ht-checkbox-field input[type="checkbox"]:checked ~ .ht-checkbox-box .ht-checkmark {
+  display: block;
+}
+
+.ht-checkbox-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+}
+
+.ht-checkbox-text a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* --- Progress Bar --- */
+.ht-progress-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ht-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ht-progress-step-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.ht-progress-track {
+  height: 4px;
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.ht-progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  transition: width 400ms cubic-bezier(0.4,0,0.2,1);
+}
+
+/* --- Tooltip --- */
+.ht-tooltip-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ht-tooltip-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: background 150ms, color 150ms;
+  flex-shrink: 0;
+}
+
+.ht-tooltip-trigger:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.ht-tooltip-panel {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--color-text-primary);
+  color: white;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  width: 240px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms, transform 150ms;
+  z-index: 100;
+}
+
+.ht-tooltip-wrap:hover .ht-tooltip-panel,
+.ht-tooltip-trigger:focus + .ht-tooltip-panel {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+/* --- Trust Pill --- */
+.ht-trust-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 6px 12px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.ht-trust-stars {
+  color: var(--color-rating);
+  letter-spacing: 1px;
+  font-size: 11px;
+}
+
+/* --- Affirming Banner --- */
+.ht-affirm-banner {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-success-bg);
+  border: 1px solid #A5D6A7;
+  border-radius: var(--radius-md);
+  width: 100%;
+}
+
+.ht-affirm-icon {
+  width: 24px;
+  height: 24px;
+  background: var(--color-success);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 13px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ht-affirm-title {
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--color-success);
+  margin-bottom: var(--space-1);
+}
+
+.ht-affirm-body {
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  line-height: 1.55;
+}
+
+/* --- Estimate Card --- */
+.ht-estimate-card {
+  background: linear-gradient(145deg, #FFFFFF 60%, #EDE7F6 100%);
+  border: 1px solid rgba(107,63,160,0.15);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  width: 100%;
+  box-shadow: var(--shadow-card);
+}
+
+.ht-estimate-greeting {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.ht-estimate-headline {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+  margin-bottom: var(--space-6);
+  letter-spacing: -0.5px;
+}
+
+.ht-estimate-headline em {
+  font-style: normal;
+  color: var(--color-primary);
+}
+
+.ht-estimate-trust-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  padding: var(--space-5);
+  background: rgba(255,255,255,0.7);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(107,63,160,0.1);
+}
+
+.ht-estimate-trust-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.ht-estimate-trust-icon {
+  color: var(--color-teal);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.ht-estimate-disclaimer {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin-top: var(--space-4);
+}
+
+/* --- Form Card Shell (full step demo) --- */
+.ht-form-shell {
+  background: var(--color-bg-page);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  max-width: 480px;
+  width: 100%;
+}
+
+.ht-form-header {
+  background: white;
+  padding: 0 var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ht-form-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.3px;
+}
+
+.ht-form-logo span { color: var(--color-teal); }
+
+.ht-form-logo-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.ht-progress-bar-strip {
+  height: 4px;
+  background: var(--color-border);
+}
+
+.ht-progress-bar-fill {
+  height: 100%;
+  background: var(--color-primary);
+  transition: width 400ms cubic-bezier(0.4,0,0.2,1);
+}
+
+.ht-form-card {
+  background: white;
+  margin: var(--space-5);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-card);
+}
+
+.ht-form-question {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+}
+
+.ht-form-question-sub {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-5);
+}
+
+.ht-form-footer {
+  padding: var(--space-4) var(--space-5) var(--space-6);
+  background: white;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.ht-security-note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="sg-layout">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <nav class="sg-sidebar">
+    <div class="sg-sidebar-logo">
+      <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 3L2 12h4v13h8v-8h4v8h8V12h4L14 3z" fill="#00B3A4"/>
+        <path d="M14 3L2 12h4v13h8v-8h4v8h8V12h4L14 3z" fill="url(#logoGrad)" opacity="0.5"/>
+        <defs><linearGradient id="logoGrad" x1="2" y1="3" x2="26" y2="28"><stop stop-color="#6B3FA0"/><stop offset="1" stop-color="#00B3A4"/></linearGradient></defs>
+      </svg>
+      <span class="sg-sidebar-logo-text">home<span>tap</span></span>
+    </div>
+
+    <div class="sg-nav-section">
+      <div class="sg-nav-section-label">Foundations</div>
+      <a class="sg-nav-link" onclick="scrollTo('colors')">Colors</a>
+      <a class="sg-nav-link" onclick="scrollTo('typography')">Typography</a>
+      <a class="sg-nav-link" onclick="scrollTo('spacing')">Spacing & Layout</a>
+    </div>
+
+    <div class="sg-nav-section">
+      <div class="sg-nav-section-label">Components</div>
+      <a class="sg-nav-link" onclick="scrollTo('buttons')">Buttons</a>
+      <a class="sg-nav-link" onclick="scrollTo('inputs')">Text Inputs</a>
+      <a class="sg-nav-link" onclick="scrollTo('radiocards')">Radio Cards</a>
+      <a class="sg-nav-link" onclick="scrollTo('checkboxes')">Checkboxes</a>
+      <a class="sg-nav-link" onclick="scrollTo('progress')">Progress Bar</a>
+      <a class="sg-nav-link" onclick="scrollTo('tooltips')">Tooltips</a>
+      <a class="sg-nav-link" onclick="scrollTo('trust')">Trust Signals</a>
+      <a class="sg-nav-link" onclick="scrollTo('affirm')">Affirming Banner</a>
+      <a class="sg-nav-link" onclick="scrollTo('estimate')">Estimate Card</a>
+    </div>
+
+    <div class="sg-nav-section">
+      <div class="sg-nav-section-label">Patterns</div>
+      <a class="sg-nav-link" onclick="scrollTo('fullstep')">Full Step Demo</a>
+      <a class="sg-nav-link" onclick="scrollTo('tokens')">CSS Tokens</a>
+    </div>
+  </nav>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="sg-main">
+    <h1 class="sg-page-title">Hometap Lead Form</h1>
+    <p class="sg-page-sub">Component Kit & Design System — v1.0 · April 2026</p>
+
+    <!-- ======= COLORS ======= -->
+    <section class="sg-section" id="colors">
+      <h2 class="sg-section-title">Colors</h2>
+
+      <h3 class="sg-subsection-title">Primary Palette</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#6B3FA0;"></div>
+          <div class="swatch-info"><span class="swatch-name">Primary Purple</span><span class="swatch-hex">#6B3FA0 · --color-primary</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#4E2D7A;"></div>
+          <div class="swatch-info"><span class="swatch-name">Primary Dark</span><span class="swatch-hex">#4E2D7A · --color-primary-dark</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#EDE7F6;"></div>
+          <div class="swatch-info"><span class="swatch-name">Primary Light</span><span class="swatch-hex">#EDE7F6 · --color-primary-light</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#00B3A4;"></div>
+          <div class="swatch-info"><span class="swatch-name">Teal</span><span class="swatch-hex">#00B3A4 · --color-teal</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#E0F7F5;"></div>
+          <div class="swatch-info"><span class="swatch-name">Teal Light</span><span class="swatch-hex">#E0F7F5 · --color-teal-light</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#F7F6FC;border:1px solid #D0D0E0;"></div>
+          <div class="swatch-info"><span class="swatch-name">Page BG</span><span class="swatch-hex">#F7F6FC · --color-bg-page</span></div>
+        </div>
+      </div>
+
+      <h3 class="sg-subsection-title">Semantic Colors</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#C62828;"></div>
+          <div class="swatch-info"><span class="swatch-name">Error</span><span class="swatch-hex">#C62828 · --color-error</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#FFEBEE;border:1px solid #C62828;"></div>
+          <div class="swatch-info"><span class="swatch-name">Error BG</span><span class="swatch-hex">#FFEBEE · --color-error-bg</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#2E7D32;"></div>
+          <div class="swatch-info"><span class="swatch-name">Success</span><span class="swatch-hex">#2E7D32 · --color-success</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#E8F5E9;border:1px solid #A5D6A7;"></div>
+          <div class="swatch-info"><span class="swatch-name">Success BG</span><span class="swatch-hex">#E8F5E9 · --color-success-bg</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#F4B400;"></div>
+          <div class="swatch-info"><span class="swatch-name">Rating Gold</span><span class="swatch-hex">#F4B400 · --color-rating</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= TYPOGRAPHY ======= -->
+    <section class="sg-section" id="typography">
+      <h2 class="sg-section-title">Typography</h2>
+      <div class="sg-note info"><span class="sg-note-icon">ℹ</span><div><strong>Font:</strong> DM Sans (400, 500, 700) for all UI. DM Mono for code/legal. Load via Google Fonts: <code>family=DM+Sans:wght@400;500;700&family=DM+Mono</code></div></div>
+
+      <div class="sg-component-card">
+        <div class="sg-component-demo" style="flex-direction:column; gap: 0; padding: var(--space-4) var(--space-8);">
+
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-meta-name">--text-3xl</div>
+              <div class="type-meta-detail">38px · 700 · Headings</div>
+            </div>
+            <span style="font-size:38px; font-weight:700; letter-spacing:-0.5px; color:var(--color-text-primary);">Home equity, unlocked.</span>
+          </div>
+
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-meta-name">--text-2xl</div>
+              <div class="type-meta-detail">30px · 700 · Result screen</div>
+            </div>
+            <span style="font-size:30px; font-weight:700; letter-spacing:-0.3px; color:var(--color-text-primary);">You could get up to <span style="color:var(--color-primary)">$173,000</span></span>
+          </div>
+
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-meta-name">--text-xl</div>
+              <div class="type-meta-detail">24px · 700 · Step question</div>
+            </div>
+            <span style="font-size:24px; font-weight:700; color:var(--color-text-primary);">What's your property address?</span>
+          </div>
+
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-meta-name">--text-lg</div>
+              <div class="type-meta-detail">20px · 500 · Card titles</div>
+            </div>
+            <span style="font-size:20px; font-weight:500; color:var(--color-text-primary);">Single-family home</span>
+          </div>
+
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-meta-name">--text-md</div>
+              <div class="type-meta-detail">17px · 500 · Option labels</div>
+            </div>
+            <span style="font-size:17px; font-weight:500; color:var(--color-text-primary);">It's my primary residence</span>
+          </div>
+
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-meta-name">--text-base</div>
+              <div class="type-meta-detail">15px · 400 · Body / inputs</div>
+            </div>
+            <span style="font-size:15px; color:var(--color-text-primary);">123 Main Street, Boston, MA</span>
+          </div>
+
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-meta-name">--text-sm</div>
+              <div class="type-meta-detail">13px · 400 · Helper / labels</div>
+            </div>
+            <span style="font-size:13px; color:var(--color-text-secondary);">This won't affect your credit score.</span>
+          </div>
+
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-meta-name">--text-xs</div>
+              <div class="type-meta-detail">11px · 400 · Legal / fine print</div>
+            </div>
+            <span style="font-size:11px; color:var(--color-text-secondary);">Investment estimate is nonbinding and subject to Hometap's review of your application.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= SPACING ======= -->
+    <section class="sg-section" id="spacing">
+      <h2 class="sg-section-title">Spacing & Layout</h2>
+      <div class="sg-note info"><span class="sg-note-icon">ℹ</span><div>8px base grid. Form card: max-width 520px, padding 40px desktop / 24px mobile, border-radius 16px, box-shadow <code>0 4px 24px rgba(107,63,160,0.08)</code>.</div></div>
+      <div class="sg-component-card">
+        <div class="sg-component-demo" style="flex-wrap:wrap; gap: var(--space-3);">
+          <div style="display:flex; flex-direction:column; gap: var(--space-2);">
+            <div style="font-size:var(--text-xs); font-family:var(--font-mono); color:var(--color-text-secondary); margin-bottom:4px;">Spacing tokens</div>
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <div style="display:flex; align-items:center; gap: 12px;">
+                <div style="width:4px; height:20px; background:var(--color-primary); border-radius:2px;"></div>
+                <span style="font-family:var(--font-mono); font-size:var(--text-xs);">--space-1: 4px</span>
+              </div>
+              <div style="display:flex; align-items:center; gap: 12px;">
+                <div style="width:8px; height:20px; background:var(--color-primary); border-radius:2px;"></div>
+                <span style="font-family:var(--font-mono); font-size:var(--text-xs);">--space-2: 8px</span>
+              </div>
+              <div style="display:flex; align-items:center; gap: 12px;">
+                <div style="width:16px; height:20px; background:var(--color-primary); border-radius:2px;"></div>
+                <span style="font-family:var(--font-mono); font-size:var(--text-xs);">--space-4: 16px</span>
+              </div>
+              <div style="display:flex; align-items:center; gap: 12px;">
+                <div style="width:24px; height:20px; background:var(--color-primary); border-radius:2px;"></div>
+                <span style="font-family:var(--font-mono); font-size:var(--text-xs);">--space-6: 24px</span>
+              </div>
+              <div style="display:flex; align-items:center; gap: 12px;">
+                <div style="width:32px; height:20px; background:var(--color-primary); border-radius:2px;"></div>
+                <span style="font-family:var(--font-mono); font-size:var(--text-xs);">--space-8: 32px</span>
+              </div>
+              <div style="display:flex; align-items:center; gap: 12px;">
+                <div style="width:40px; height:20px; background:var(--color-primary); border-radius:2px;"></div>
+                <span style="font-family:var(--font-mono); font-size:var(--text-xs);">--space-10: 40px</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap: var(--space-2);">
+            <div style="font-size:var(--text-xs); font-family:var(--font-mono); color:var(--color-text-secondary); margin-bottom:4px;">Radius tokens</div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex;align-items:center;gap:12px;"><div style="width:48px;height:24px;background:var(--color-primary-light);border:1.5px solid var(--color-primary);border-radius:6px;"></div><span style="font-family:var(--font-mono);font-size:var(--text-xs);">--radius-sm: 6px</span></div>
+              <div style="display:flex;align-items:center;gap:12px;"><div style="width:48px;height:24px;background:var(--color-primary-light);border:1.5px solid var(--color-primary);border-radius:10px;"></div><span style="font-family:var(--font-mono);font-size:var(--text-xs);">--radius-md: 10px (inputs, cards)</span></div>
+              <div style="display:flex;align-items:center;gap:12px;"><div style="width:48px;height:24px;background:var(--color-primary-light);border:1.5px solid var(--color-primary);border-radius:16px;"></div><span style="font-family:var(--font-mono);font-size:var(--text-xs);">--radius-lg: 16px (form card)</span></div>
+              <div style="display:flex;align-items:center;gap:12px;"><div style="width:48px;height:24px;background:var(--color-primary-light);border:1.5px solid var(--color-primary);border-radius:9999px;"></div><span style="font-family:var(--font-mono);font-size:var(--text-xs);">--radius-full (buttons, pills)</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= BUTTONS ======= -->
+    <section class="sg-section" id="buttons">
+      <h2 class="sg-section-title">Buttons</h2>
+
+      <div class="sg-component-card">
+        <div class="sg-component-demo" style="flex-wrap:wrap; align-items:center; gap: var(--space-4);">
+          <button class="ht-btn ht-btn-primary">Continue</button>
+          <button class="ht-btn ht-btn-primary">Get My Estimate</button>
+          <button class="ht-btn ht-btn-primary" disabled>Disabled</button>
+          <button class="ht-btn ht-btn-primary loading"><span class="spinner"></span></button>
+          <button class="ht-btn ht-btn-secondary">Back</button>
+          <button class="ht-btn-back">‹ Go back</button>
+        </div>
+        <div class="sg-code-header">
+          <span class="sg-code-lang">HTML + CSS</span>
+          <button class="sg-copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre class="sg-code-block">/* Primary Button */
+&lt;button class="ht-btn ht-btn-primary"&gt;Continue&lt;/button&gt;
+&lt;button class="ht-btn ht-btn-primary ht-btn-full"&gt;Get My Estimate&lt;/button&gt;
+&lt;button class="ht-btn ht-btn-primary" disabled&gt;Disabled&lt;/button&gt;
+
+/* Loading state */
+&lt;button class="ht-btn ht-btn-primary loading"&gt;
+  &lt;span class="spinner"&gt;&lt;/span&gt;
+&lt;/button&gt;
+
+/* Secondary + Back */
+&lt;button class="ht-btn ht-btn-secondary"&gt;Back&lt;/button&gt;
+&lt;button class="ht-btn-back"&gt;&#8249; Go back&lt;/button&gt;
+
+/* CTA Copy Guide:
+   Step 1       → "Get My Estimate"
+   Mid-flow     → "Continue"
+   Pre-reveal   → "Show My Estimate"
+   App start    → "Start My Application"
+   Final submit → "Submit Application"
+*/</pre>
+      </div>
+    </section>
+
+    <!-- ======= TEXT INPUTS ======= -->
+    <section class="sg-section" id="inputs">
+      <h2 class="sg-section-title">Text Inputs</h2>
+
+      <div class="sg-component-card">
+        <div class="sg-component-demo" style="flex-wrap:wrap; gap: var(--space-5);">
+
+          <div class="ht-field" style="max-width:280px;">
+            <label class="ht-label" for="demo-name">First name <span class="required">*</span></label>
+            <input class="ht-input" type="text" id="demo-name" placeholder="Jane">
+          </div>
+
+          <div class="ht-field" style="max-width:280px;">
+            <label class="ht-label" for="demo-debt">Total debt balance</label>
+            <input class="ht-input" type="text" id="demo-debt" placeholder="$0" inputmode="numeric">
+            <span class="ht-helper">Mortgage + any other liens. Rough estimate is fine.</span>
+          </div>
+
+          <div class="ht-field" style="max-width:280px;">
+            <label class="ht-label" for="demo-email">Email address <span class="required">*</span></label>
+            <input class="ht-input error" type="email" id="demo-email" value="jane@" aria-invalid="true" aria-describedby="email-err">
+            <span class="ht-error-msg" id="email-err">⚠ Please enter a valid email address.</span>
+          </div>
+
+          <div class="ht-field" style="max-width:280px;">
+            <label class="ht-label" for="demo-ssn">Social Security Number <span class="required">*</span></label>
+            <input class="ht-input" type="text" id="demo-ssn" placeholder="XXX-XX-XXXX" maxlength="11">
+            <span class="ht-helper">🔒 Encrypted · Soft pull only · No credit impact</span>
+          </div>
+        </div>
+        <div class="sg-code-header">
+          <span class="sg-code-lang">HTML</span>
+          <button class="sg-copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre class="sg-code-block">&lt;!-- Standard field --&gt;
+&lt;div class="ht-field"&gt;
+  &lt;label class="ht-label" for="field-id"&gt;
+    Label text &lt;span class="required"&gt;*&lt;/span&gt;
+  &lt;/label&gt;
+  &lt;input class="ht-input" type="text" id="field-id" placeholder="Placeholder"&gt;
+  &lt;span class="ht-helper"&gt;Optional helper text&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- Error state --&gt;
+&lt;div class="ht-field"&gt;
+  &lt;label class="ht-label" for="email"&gt;Email &lt;span class="required"&gt;*&lt;/span&gt;&lt;/label&gt;
+  &lt;input class="ht-input error" type="email" id="email"
+    aria-invalid="true" aria-describedby="email-err"&gt;
+  &lt;span class="ht-error-msg" id="email-err"&gt;
+    ⚠ Please enter a valid email address.
+  &lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- Mobile keyboard hints --&gt;
+&lt;input inputmode="numeric"&gt;   &lt;!-- debt balance --&gt;
+&lt;input inputmode="tel"&gt;        &lt;!-- phone --&gt;
+&lt;input type="email"&gt;           &lt;!-- email --&gt;
+&lt;input autocomplete="street-address"&gt;  &lt;!-- address --&gt;</pre>
+      </div>
+    </section>
+
+    <!-- ======= RADIO CARDS ======= -->
+    <section class="sg-section" id="radiocards">
+      <h2 class="sg-section-title">Radio Cards</h2>
+      <div class="sg-note info"><span class="sg-note-icon">ℹ</span><div>The dominant input pattern. Auto-advance after 300ms on single-select screens. Use 2-col grid for 4+ options; 1-col for 2–3. Always collapse to 1-col on mobile.</div></div>
+
+      <h3 class="sg-subsection-title">1-column (use for 2–3 options)</h3>
+      <div class="sg-component-card">
+        <div class="sg-component-demo centered">
+          <div style="width:100%; max-width: 400px;">
+            <fieldset style="border:none;padding:0;">
+              <legend style="font-size:var(--text-xl);font-weight:700;color:var(--color-text-primary);margin-bottom:var(--space-2);">How do you use this property?</legend>
+              <p style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--space-5);">Select the option that best applies.</p>
+              <div class="ht-radio-group">
+                <div class="ht-radio-card">
+                  <input type="radio" name="occupancy" id="occ-primary" value="primary">
+                  <label class="ht-radio-label" for="occ-primary">
+                    <span class="ht-radio-icon">🏠</span>
+                    <span class="ht-radio-text">
+                      <span class="ht-radio-text-main">It's my primary residence</span>
+                    </span>
+                    <span class="ht-radio-indicator"></span>
+                  </label>
+                </div>
+                <div class="ht-radio-card">
+                  <input type="radio" name="occupancy" id="occ-vacation" value="vacation" checked>
+                  <label class="ht-radio-label" for="occ-vacation">
+                    <span class="ht-radio-icon">🌅</span>
+                    <span class="ht-radio-text">
+                      <span class="ht-radio-text-main">It's a vacation home</span>
+                    </span>
+                    <span class="ht-radio-indicator"></span>
+                  </label>
+                </div>
+                <div class="ht-radio-card">
+                  <input type="radio" name="occupancy" id="occ-rental" value="rental">
+                  <label class="ht-radio-label" for="occ-rental">
+                    <span class="ht-radio-icon">🔑</span>
+                    <span class="ht-radio-text">
+                      <span class="ht-radio-text-main">I rent it out</span>
+                      <span class="ht-radio-text-sub">Investment property</span>
+                    </span>
+                    <span class="ht-radio-indicator"></span>
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+        <div class="sg-code-header">
+          <span class="sg-code-lang">HTML</span>
+          <button class="sg-copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre class="sg-code-block">&lt;fieldset&gt;
+  &lt;legend class="ht-form-question"&gt;How do you use this property?&lt;/legend&gt;
+  &lt;div class="ht-radio-group"&gt;  &lt;!-- 1-col --&gt;
+
+    &lt;div class="ht-radio-card"&gt;
+      &lt;input type="radio" name="occupancy" id="occ-primary" value="primary"&gt;
+      &lt;label class="ht-radio-label" for="occ-primary"&gt;
+        &lt;span class="ht-radio-icon"&gt;🏠&lt;/span&gt;
+        &lt;span class="ht-radio-text"&gt;
+          &lt;span class="ht-radio-text-main"&gt;It's my primary residence&lt;/span&gt;
+          &lt;!-- optional: --&gt;
+          &lt;span class="ht-radio-text-sub"&gt;Sub-label here&lt;/span&gt;
+        &lt;/span&gt;
+        &lt;span class="ht-radio-indicator"&gt;&lt;/span&gt;
+      &lt;/label&gt;
+    &lt;/div&gt;
+
+    &lt;!-- repeat for each option --&gt;
+  &lt;/div&gt;
+&lt;/fieldset&gt;
+
+&lt;!-- 2-col grid: swap class to "ht-radio-grid" --&gt;
+&lt;div class="ht-radio-grid"&gt;...&lt;/div&gt;
+
+/* Auto-advance JS pattern:
+   radioInputs.forEach(input =&gt; {
+     input.addEventListener('change', () =&gt; {
+       setTimeout(() =&gt; goToNextStep(), 300);
+     });
+   });
+*/</pre>
+      </div>
+
+      <h3 class="sg-subsection-title">2-column grid (use for 4+ options)</h3>
+      <div class="sg-component-card">
+        <div class="sg-component-demo centered">
+          <div style="width:100%;max-width:440px;">
+            <div style="font-size:var(--text-xl);font-weight:700;color:var(--color-text-primary);margin-bottom:var(--space-5);">What would you use the funds for?</div>
+            <div class="ht-radio-grid">
+              <div class="ht-radio-card"><input type="radio" name="usecase" id="uc-debt" value="debt" checked><label class="ht-radio-label" for="uc-debt"><span class="ht-radio-icon">💳</span><span class="ht-radio-text"><span class="ht-radio-text-main">Debt payoff</span></span><span class="ht-radio-indicator"></span></label></div>
+              <div class="ht-radio-card"><input type="radio" name="usecase" id="uc-reno" value="reno"><label class="ht-radio-label" for="uc-reno"><span class="ht-radio-icon">🔨</span><span class="ht-radio-text"><span class="ht-radio-text-main">Renovation</span></span><span class="ht-radio-indicator"></span></label></div>
+              <div class="ht-radio-card"><input type="radio" name="usecase" id="uc-biz" value="biz"><label class="ht-radio-label" for="uc-biz"><span class="ht-radio-icon">💼</span><span class="ht-radio-text"><span class="ht-radio-text-main">Business</span></span><span class="ht-radio-indicator"></span></label></div>
+              <div class="ht-radio-card"><input type="radio" name="usecase" id="uc-retire" value="retire"><label class="ht-radio-label" for="uc-retire"><span class="ht-radio-icon">🏖️</span><span class="ht-radio-text"><span class="ht-radio-text-main">Retirement</span></span><span class="ht-radio-indicator"></span></label></div>
+              <div class="ht-radio-card"><input type="radio" name="usecase" id="uc-life" value="life"><label class="ht-radio-label" for="uc-life"><span class="ht-radio-icon">🎉</span><span class="ht-radio-text"><span class="ht-radio-text-main">Life event</span></span><span class="ht-radio-indicator"></span></label></div>
+              <div class="ht-radio-card"><input type="radio" name="usecase" id="uc-other" value="other"><label class="ht-radio-label" for="uc-other"><span class="ht-radio-icon">✦</span><span class="ht-radio-text"><span class="ht-radio-text-main">Other</span></span><span class="ht-radio-indicator"></span></label></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= CHECKBOXES ======= -->
+    <section class="sg-section" id="checkboxes">
+      <h2 class="sg-section-title">Checkboxes</h2>
+
+      <div class="sg-component-card">
+        <div class="sg-component-demo" style="flex-direction:column; gap: var(--space-4);">
+          <label class="ht-checkbox-field">
+            <input type="checkbox" id="chk1" checked>
+            <span class="ht-checkbox-box">
+              <svg class="ht-checkmark" width="12" height="10" viewBox="0 0 12 10" fill="none">
+                <path d="M1 5l3.5 3.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="ht-checkbox-text">By checking this box, I authorize Hometap to obtain information from credit bureaus, including a full credit inquiry ("hard pull") solely for the purpose of processing my Investment application. I have read and agree to Hometap's <a href="#">Terms of Use</a>, <a href="#">Privacy Policy</a>, and <a href="#">Credit Authorization</a>.</span>
+          </label>
+
+          <label class="ht-checkbox-field">
+            <input type="checkbox" id="chk2">
+            <span class="ht-checkbox-box">
+              <svg class="ht-checkmark" width="12" height="10" viewBox="0 0 12 10" fill="none">
+                <path d="M1 5l3.5 3.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="ht-checkbox-text">Unchecked state</span>
+          </label>
+        </div>
+        <div class="sg-code-header">
+          <span class="sg-code-lang">HTML</span>
+          <button class="sg-copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre class="sg-code-block">&lt;label class="ht-checkbox-field"&gt;
+  &lt;input type="checkbox" id="consent"&gt;
+  &lt;span class="ht-checkbox-box"&gt;
+    &lt;svg class="ht-checkmark" width="12" height="10" viewBox="0 0 12 10" fill="none"&gt;
+      &lt;path d="M1 5l3.5 3.5L11 1" stroke="white" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round"/&gt;
+    &lt;/svg&gt;
+  &lt;/span&gt;
+  &lt;span class="ht-checkbox-text"&gt;
+    Consent copy with &lt;a href="#"&gt;linked terms&lt;/a&gt;.
+  &lt;/span&gt;
+&lt;/label&gt;</pre>
+      </div>
+    </section>
+
+    <!-- ======= PROGRESS ======= -->
+    <section class="sg-section" id="progress">
+      <h2 class="sg-section-title">Progress Bar</h2>
+      <div class="sg-note info"><span class="sg-note-icon">ℹ</span><div>Continuous bar preferred over step pills — less intimidating at start. Role: <code>progressbar</code> with <code>aria-valuenow</code>, <code>aria-valuemin="0"</code>, <code>aria-valuemax="100"</code>.</div></div>
+
+      <div class="sg-component-card">
+        <div class="sg-component-demo" style="flex-direction:column; gap: var(--space-6);">
+          <div class="ht-progress-wrap">
+            <div class="ht-progress-meta">
+              <span class="ht-progress-step-label">Step 3 of 14</span>
+              <span class="ht-progress-step-label">About 90 seconds left</span>
+            </div>
+            <div class="ht-progress-track" role="progressbar" aria-valuenow="21" aria-valuemin="0" aria-valuemax="100" aria-label="Form progress">
+              <div class="ht-progress-fill" style="width:21%"></div>
+            </div>
+          </div>
+          <div class="ht-progress-wrap">
+            <div class="ht-progress-track" role="progressbar" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100">
+              <div class="ht-progress-fill" style="width:64%"></div>
+            </div>
+          </div>
+          <div class="ht-progress-wrap">
+            <div class="ht-progress-track" role="progressbar" aria-valuenow="93" aria-valuemin="0" aria-valuemax="100">
+              <div class="ht-progress-fill" style="width:93%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="sg-code-header">
+          <span class="sg-code-lang">HTML</span>
+          <button class="sg-copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre class="sg-code-block">&lt;div class="ht-progress-wrap"&gt;
+  &lt;div class="ht-progress-meta"&gt;
+    &lt;span class="ht-progress-step-label"&gt;Step 3 of 14&lt;/span&gt;
+    &lt;span class="ht-progress-step-label"&gt;About 90 seconds left&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="ht-progress-track"
+    role="progressbar"
+    aria-valuenow="21"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-label="Form completion progress"&gt;
+    &lt;div class="ht-progress-fill" style="width: 21%"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+      </div>
+    </section>
+
+    <!-- ======= TOOLTIPS ======= -->
+    <section class="sg-section" id="tooltips">
+      <h2 class="sg-section-title">Tooltips</h2>
+
+      <div class="sg-component-card">
+        <div class="sg-component-demo" style="gap: var(--space-8); flex-wrap:wrap; min-height:120px; align-items:center; padding-top: 80px;">
+
+          <div style="display:flex; align-items:center; gap: var(--space-2);">
+            <label class="ht-label" style="margin:0">Total debt balance</label>
+            <div class="ht-tooltip-wrap">
+              <button class="ht-tooltip-trigger" type="button" aria-describedby="tt1">i</button>
+              <div class="ht-tooltip-panel" id="tt1" role="tooltip">Include your mortgage balance plus any home equity loans, HELOCs, or other liens on this property.</div>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap: var(--space-2);">
+            <label class="ht-label" style="margin:0">Social Security Number</label>
+            <div class="ht-tooltip-wrap">
+              <button class="ht-tooltip-trigger" type="button" aria-describedby="tt2">i</button>
+              <div class="ht-tooltip-panel" id="tt2" role="tooltip">We use your SSN for a soft credit pull only. This will not affect your credit score.</div>
+            </div>
+          </div>
+        </div>
+        <div class="sg-code-header">
+          <span class="sg-code-lang">HTML</span>
+          <button class="sg-copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre class="sg-code-block">&lt;div class="ht-tooltip-wrap"&gt;
+  &lt;button class="ht-tooltip-trigger"
+    type="button"
+    aria-describedby="tooltip-id"&gt;i&lt;/button&gt;
+  &lt;div class="ht-tooltip-panel"
+    id="tooltip-id"
+    role="tooltip"&gt;
+    Tooltip content here. Keep under 20 words.
+  &lt;/div&gt;
+&lt;/div&gt;
+
+/* Tooltip triggers on hover AND focus.
+   Dismiss on Escape key — add JS listener:
+   document.addEventListener('keydown', e =&gt; {
+     if (e.key === 'Escape') closeAllTooltips();
+   });
+*/</pre>
+      </div>
+    </section>
+
+    <!-- ======= TRUST SIGNALS ======= -->
+    <section class="sg-section" id="trust">
+      <h2 class="sg-section-title">Trust Signals</h2>
+
+      <div class="sg-component-card">
+        <div class="sg-component-demo centered" style="flex-wrap:wrap; gap: var(--space-3);">
+          <div class="ht-trust-pill">
+            <span class="ht-trust-stars">★★★★★</span>
+            <span>4.8 / 5 · Trustpilot</span>
+          </div>
+          <div class="ht-trust-pill">🔒 256-bit SSL encrypted</div>
+          <div class="ht-trust-pill">✓ No credit impact</div>
+          <div class="ht-trust-pill">⏱ Takes 2 minutes</div>
+          <div class="ht-trust-pill">🏦 25,000+ homeowners funded</div>
+        </div>
+        <div class="sg-code-header">
+          <span class="sg-code-lang">HTML</span>
+          <button class="sg-copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre class="sg-code-block">&lt;!-- Trustpilot Pill --&gt;
+&lt;div class="ht-trust-pill"&gt;
+  &lt;span class="ht-trust-stars"&gt;★★★★★&lt;/span&gt;
+  &lt;span&gt;4.8 / 5 · Trustpilot&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- Security pill --&gt;
+&lt;div class="ht-trust-pill"&gt;🔒 256-bit SSL encrypted&lt;/div&gt;
+
+&lt;!-- Trust signal placement by step:
+  Header (all steps) → Trustpilot pill
+  Step 1             → "Takes less than 2 minutes"
+  Step 12 (consent)  → "No credit impact"
+  Step 13 (SSN)      → "256-bit SSL" + "We never sell your data"
+  Result screen      → All three product pillars
+--&gt;</pre>
+      </div>
+    </section>
+
+    <!-- ======= AFFIRM BANNER ======= -->
+    <section class="sg-section" id="affirm">
+      <h2 class="sg-section-title">Affirming Banner</h2>
+
+      <div class="sg-component-card">
+        <div class="sg-component-demo">
+          <div class="ht-affirm-banner">
+            <div class="ht-affirm-icon">✓</div>
+            <div>
+              <div class="ht-affirm-title">Good news! We're investing in properties like yours.</div>
+              <div class="ht-affirm-body">Your property looks like a strong fit for a Hometap Investment. See your personalized estimate in just a few more steps.</div>
+            </div>
+          </div>
+        </div>
+        <div class="sg-code-header">
+          <span class="sg-code-lang">HTML</span>
+          <button class="sg-copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre class="sg-code-block">&lt;div class="ht-affirm-banner"&gt;
+  &lt;div class="ht-affirm-icon"&gt;✓&lt;/div&gt;
+  &lt;div&gt;
+    &lt;div class="ht-affirm-title"&gt;
+      Good news! We're investing in properties like yours.
+    &lt;/div&gt;
+    &lt;div class="ht-affirm-body"&gt;
+      Your property looks like a strong fit. See your
+      personalized estimate in just a few more steps.
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+/* Trigger: after property + debt questions clear
+   eligibility check. Display at top of Phase 3
+   (step 8 in recommended flow). */</pre>
+      </div>
+    </section>
+
+    <!-- ======= ESTIMATE CARD ======= -->
+    <section class="sg-section" id="estimate">
+      <h2 class="sg-section-title">Estimate Result Card</h2>
+
+      <div class="sg-component-card">
+        <div class="sg-component-demo centered">
+          <div class="ht-estimate-card" style="max-width:400px;">
+            <div class="ht-estimate-greeting">Jane, you could get up to</div>
+            <div class="ht-estimate-headline"><em>$173,000</em> from Hometap</div>
+            <div class="ht-estimate-trust-row">
+              <div class="ht-estimate-trust-item">
+                <span class="ht-estimate-trust-icon">✓</span>
+                No monthly payments for up to 10 years
+              </div>
+              <div class="ht-estimate-trust-item">
+                <span class="ht-estimate-trust-icon">✓</span>
+                No restrictions on how you use the funds
+              </div>
+              <div class="ht-estimate-trust-item">
+                <span class="ht-estimate-trust-icon">✓</span>
+                No prepayment penalty — settle anytime
+              </div>
+            </div>
+            <button class="ht-btn ht-btn-primary ht-btn-full">Start My Application</button>
+            <div class="ht-estimate-disclaimer">Your Investment Estimate is nonbinding and subject to Hometap's review of your application, including a full credit inquiry to assess your home's value.</div>
+          </div>
+        </div>
+        <div class="sg-code-header">
+          <span class="sg-code-lang">HTML</span>
+          <button class="sg-copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre class="sg-code-block">&lt;div class="ht-estimate-card"&gt;
+  &lt;div class="ht-estimate-greeting"&gt;{firstName}, you could get up to&lt;/div&gt;
+  &lt;div class="ht-estimate-headline"&gt;
+    &lt;em&gt;{formattedAmount}&lt;/em&gt; from Hometap
+  &lt;/div&gt;
+  &lt;div class="ht-estimate-trust-row"&gt;
+    &lt;div class="ht-estimate-trust-item"&gt;
+      &lt;span class="ht-estimate-trust-icon"&gt;✓&lt;/span&gt;
+      No monthly payments for up to 10 years
+    &lt;/div&gt;
+    &lt;div class="ht-estimate-trust-item"&gt;
+      &lt;span class="ht-estimate-trust-icon"&gt;✓&lt;/span&gt;
+      No restrictions on how you use the funds
+    &lt;/div&gt;
+    &lt;div class="ht-estimate-trust-item"&gt;
+      &lt;span class="ht-estimate-trust-icon"&gt;✓&lt;/span&gt;
+      No prepayment penalty — settle anytime
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class="ht-btn ht-btn-primary ht-btn-full"&gt;
+    Start My Application
+  &lt;/button&gt;
+  &lt;div class="ht-estimate-disclaimer"&gt;
+    Estimate is nonbinding and subject to Hometap's review.
+  &lt;/div&gt;
+&lt;/div&gt;
+
+/* Amount count-up animation:
+   function countUp(el, target, duration=800) {
+     let start = 0;
+     const step = timestamp =&gt; {
+       if (!startTime) startTime = timestamp;
+       const progress = Math.min((timestamp - startTime) / duration, 1);
+       el.textContent = '$' + Math.floor(progress * target).toLocaleString();
+       if (progress &lt; 1) requestAnimationFrame(step);
+     };
+     let startTime;
+     requestAnimationFrame(step);
+   }
+*/</pre>
+      </div>
+    </section>
+
+    <!-- ======= FULL STEP DEMO ======= -->
+    <section class="sg-section" id="fullstep">
+      <h2 class="sg-section-title">Full Step Demo</h2>
+      <div class="sg-note success"><span class="sg-note-icon">✓</span><div>This shows the complete form shell — header with logo + progress bar, form card, and footer — as it should render on a real step.</div></div>
+
+      <div class="sg-component-card">
+        <div class="sg-component-demo centered" style="padding: var(--space-8);">
+          <div class="ht-form-shell">
+            <!-- Header -->
+            <div class="ht-form-header">
+              <div class="ht-form-logo">
+                <svg class="ht-form-logo-icon" viewBox="0 0 28 28" fill="none">
+                  <path d="M14 3L2 12h4v13h8v-8h4v8h8V12h4L14 3z" fill="#00B3A4"/>
+                </svg>
+                home<span>tap</span>
+              </div>
+              <div class="ht-trust-pill" style="font-size:11px; padding:4px 10px;">
+                <span class="ht-trust-stars" style="font-size:10px;">★★★★★</span>
+                <span>4.8 Trustpilot</span>
+              </div>
+            </div>
+            <!-- Progress -->
+            <div class="ht-progress-bar-strip">
+              <div class="ht-progress-bar-fill" style="width: 35%;"></div>
+            </div>
+            <!-- Card -->
+            <div class="ht-form-card">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-5);">
+                <button class="ht-btn-back" type="button">‹ Back</button>
+                <span style="font-size:var(--text-xs);color:var(--color-text-secondary);">Step 5 of 14</span>
+              </div>
+              <div class="ht-form-question">How do you use this property?</div>
+              <p class="ht-form-question-sub">Select the option that best describes you.</p>
+              <fieldset style="border:none;padding:0;">
+                <legend style="position:absolute;width:1px;height:1px;overflow:hidden;">Property occupancy type</legend>
+                <div class="ht-radio-group">
+                  <div class="ht-radio-card"><input type="radio" name="occ2" id="occ2-primary" value="primary" checked><label class="ht-radio-label" for="occ2-primary"><span class="ht-radio-icon">🏠</span><span class="ht-radio-text"><span class="ht-radio-text-main">It's my primary residence</span></span><span class="ht-radio-indicator"></span></label></div>
+                  <div class="ht-radio-card"><input type="radio" name="occ2" id="occ2-vacation" value="vacation"><label class="ht-radio-label" for="occ2-vacation"><span class="ht-radio-icon">🌅</span><span class="ht-radio-text"><span class="ht-radio-text-main">It's a vacation home</span></span><span class="ht-radio-indicator"></span></label></div>
+                  <div class="ht-radio-card"><input type="radio" name="occ2" id="occ2-rental" value="rental"><label class="ht-radio-label" for="occ2-rental"><span class="ht-radio-icon">🔑</span><span class="ht-radio-text"><span class="ht-radio-text-main">I rent it out</span><span class="ht-radio-text-sub">Investment property</span></span><span class="ht-radio-indicator"></span></label></div>
+                </div>
+              </fieldset>
+              <div style="margin-top: var(--space-6);">
+                <button class="ht-btn ht-btn-primary ht-btn-full" type="button">Continue</button>
+              </div>
+            </div>
+            <!-- Footer -->
+            <div class="ht-form-footer">
+              <div class="ht-security-note">
+                🔒 <span>Your information is encrypted and never sold.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= CSS TOKENS ======= -->
+    <section class="sg-section" id="tokens">
+      <h2 class="sg-section-title">All CSS Tokens</h2>
+      <div class="sg-note info"><span class="sg-note-icon">ℹ</span><div>Paste this entire block into your root stylesheet or <code>tokens.css</code> file. All components reference these variables — never hardcode hex values in components.</div></div>
+
+      <div class="sg-component-card">
+        <div class="sg-code-header">
+          <span class="sg-code-lang">CSS</span>
+          <button class="sg-copy-btn" onclick="copyCode(this)">Copy All Tokens</button>
+        </div>
+        <pre class="sg-code-block">:root {
+  /* ── Primary ── */
+  --color-primary:        #6B3FA0;
+  --color-primary-dark:   #4E2D7A;
+  --color-primary-light:  #EDE7F6;
+  --color-teal:           #00B3A4;
+  --color-teal-light:     #E0F7F5;
+
+  /* ── Text ── */
+  --color-text-primary:   #1A1A2E;
+  --color-text-secondary: #5C5C7A;
+  --color-text-disabled:  #AAAAAA;
+
+  /* ── Borders & Backgrounds ── */
+  --color-border:         #D0D0E0;
+  --color-border-focus:   #6B3FA0;
+  --color-bg-page:        #F7F6FC;
+  --color-bg-card:        #FFFFFF;
+  --color-bg-selected:    #EDE7F6;
+
+  /* ── Semantic ── */
+  --color-error:          #C62828;
+  --color-error-bg:       #FFEBEE;
+  --color-success:        #2E7D32;
+  --color-success-bg:     #E8F5E9;
+  --color-warning:        #E65100;
+  --color-rating:         #F4B400;
+
+  /* ── Typography ── */
+  --font-primary: 'DM Sans', system-ui, sans-serif;
+  --font-mono:    'DM Mono', monospace;
+
+  --text-xs:   11px;
+  --text-sm:   13px;
+  --text-base: 15px;
+  --text-md:   17px;
+  --text-lg:   20px;
+  --text-xl:   24px;
+  --text-2xl:  30px;
+  --text-3xl:  38px;
+
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-bold:    700;
+
+  --leading-tight:  1.2;
+  --leading-normal: 1.6;
+
+  /* ── Spacing ── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── Radii ── */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-card:  0 4px 24px rgba(107,63,160,0.08);
+  --shadow-focus: 0 0 0 3px rgba(107,63,160,0.20);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}</pre>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+function scrollTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.sg-nav-link').forEach(l => l.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function copyCode(btn) {
+  const pre = btn.closest('.sg-component-card').querySelector('.sg-code-block');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>
