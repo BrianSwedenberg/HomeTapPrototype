@@ -176,7 +176,7 @@ export function AdminDashboard() {
     setSelectedLead(updated);
   }
 
-  const TH = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
+  const TH = ({ children, style }: { children?: React.ReactNode; style?: React.CSSProperties }) => (
     <th style={{
       padding: '10px 14px',
       textAlign: 'left',
