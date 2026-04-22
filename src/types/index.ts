@@ -74,4 +74,4 @@ export interface ReferralFormData {
   notes: string;
 }
 
-export type Screen = 'login' | 'pipeline' | 'refer' | 'confirmation' | 'detail' | 'account';
+export type Screen = 'login' | 'pipeline' | 'refer' | 'confirmation' | 'detail' | 'account' | 'admin-login' | 'admin-dashboard';

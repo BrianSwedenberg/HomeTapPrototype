@@ -1,13 +1,13 @@
 # Current State — Hometap Partner Referral Platform
 
-**Last updated:** April 21, 2026
-**Phase:** Phase 1 Core MVP — fully scaffolded and running
+**Last updated:** April 22, 2026
+**Phase:** Phase 1 Core MVP + Admin Panel — fully scaffolded and running
 
 ---
 
 ## Application Status
 
-**All 6 screens implemented and wired.** The app builds cleanly (no TypeScript errors), the dev server runs, and all Tailwind design tokens are applied.
+**All 6 partner screens + 2 admin screens implemented and wired.** The app builds cleanly (no TypeScript errors), the dev server runs, and all Tailwind design tokens are applied.
 
 ---
 
@@ -68,12 +68,49 @@ Stored in `.env.local` (not committed). Both values are set.
 - Confirmation screen with animated success circle and "what happens next" timeline
 - Prospect Detail screen with status hero, lead summary, and status timeline
 - Account screen with profile, contact info, payout info, earnings summary, and sign-out
-- Zustand routing (no React Router) between all 6 screens
+- Zustand routing (no React Router) between all 8 screens
 - FAB visible on all screens except Login; no-op on Refer tab
 - BottomNav active state per spec
 - `fetchPartnerData` — single read function, queries partner + leads + statuses + history
 - `submitLead` — single write function, inserts Lead + Leads_Metadata + initial status history row
 - Tailwind design tokens mapped from design spec (colors, typography, spacing, radii, shadows)
+- **Admin panel** — password-gated, full-page leads dashboard with stats, search/filter, inline status updates, and detail drawer
+
+---
+
+## Admin Panel
+
+**Access:** Small "admin" text link at bottom of LoginScreen → navigates to `admin-login`
+**Auth:** Hardcoded password `"hometap"`, local React state only, not persisted
+**Screens added:** `admin-login`, `admin-dashboard`
+
+### New files
+| File | Purpose |
+|------|---------|
+| `src/components/admin/AdminLoginScreen.tsx` | Password gate for admin area |
+| `src/components/admin/AdminDashboard.tsx` | Full-page leads table with stats, search, and filters |
+| `src/components/admin/LeadDetailDrawer.tsx` | Slide-in drawer with full lead detail, status editor, notes, and history |
+| `src/lib/fetchAdminLeads.ts` | All Supabase reads and writes for admin functionality |
+| `src/types/admin.ts` | TypeScript interfaces: AdminLead, ReferralStatus, StatusHistoryEntry |
+
+### Screens added
+| Screen | Component | Purpose |
+|--------|-----------|---------|
+| `admin-login`     | `AdminLoginScreen.tsx`  | Password gate for internal admin access |
+| `admin-dashboard` | `AdminDashboard.tsx`    | Lead table with filters, stats, and drawer |
+
+### Supabase operations (admin)
+| Function | Operation | Table(s) |
+|----------|-----------|----------|
+| `fetchAdminLeads()` | SELECT with LEFT JOINs | `Leads`, `referral_statuses`, `partners` |
+| `fetchReferralStatuses()` | SELECT all | `referral_statuses` |
+| `updateLeadStatus()` | UPDATE + INSERT | `Leads`, `referral_status_history` |
+| `updateLeadNotes()` | UPDATE | `Leads` |
+| `fetchLeadHistory()` | SELECT with JOIN | `referral_status_history`, `referral_statuses` |
+
+### Data isolation rule
+`fetchAdminLeads.ts` is the ONLY file that performs admin Supabase operations.
+No admin component imports `supabaseClient.ts` directly.
 
 ---
 

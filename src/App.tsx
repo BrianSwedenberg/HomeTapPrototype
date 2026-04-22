@@ -6,17 +6,21 @@ import { ReferScreen } from './screens/ReferScreen';
 import { ConfirmationScreen } from './components/referral/ConfirmationScreen';
 import { ProspectDetailScreen } from './screens/ProspectDetailScreen';
 import { AccountScreen } from './components/account/AccountScreen';
+import { AdminLoginScreen } from './components/admin/AdminLoginScreen';
+import { AdminDashboard } from './components/admin/AdminDashboard';
 
 export default function App() {
   const currentScreen = useAppStore(s => s.currentScreen);
 
   switch (currentScreen) {
-    case 'login':        return <LoginScreen />;
-    case 'pipeline':     return <PipelineScreen />;
-    case 'refer':        return <ReferScreen />;
-    case 'confirmation': return <ConfirmationScreen />;
-    case 'detail':       return <ProspectDetailScreen />;
-    case 'account':      return <AccountScreen />;
-    default:             return <LoginScreen />;
+    case 'login':            return <LoginScreen />;
+    case 'pipeline':         return <PipelineScreen />;
+    case 'refer':            return <ReferScreen />;
+    case 'confirmation':     return <ConfirmationScreen />;
+    case 'detail':           return <ProspectDetailScreen />;
+    case 'account':          return <AccountScreen />;
+    case 'admin-login':      return <AdminLoginScreen />;
+    case 'admin-dashboard':  return <AdminDashboard />;
+    default:                 return <LoginScreen />;
   }
 }

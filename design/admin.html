@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hometap · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --purple: #6B3FA0;
+    --purple-dark: #4E2D7A;
+    --purple-light: #EDE7F6;
+    --purple-mid: #9B6FD0;
+    --teal: #00B3A4;
+    --teal-light: #E0F7F5;
+    --ink: #1A1A2E;
+    --ink-mid: #3A3A55;
+    --muted: #6B6B8A;
+    --border: #E2E0F0;
+    --bg: #F5F4FC;
+    --surface: #FFFFFF;
+    --success: #2E7D32;
+    --success-bg: #E8F5E9;
+    --error: #C62828;
+    --error-bg: #FFEBEE;
+    --warning: #E65100;
+    --warning-bg: #FFF3E0;
+    --info-bg: #E8EAF6;
+    --gold: #F4B400;
+
+    --font: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+    --shadow-sm: 0 1px 3px rgba(107,63,160,0.08);
+    --shadow-md: 0 4px 16px rgba(107,63,160,0.10);
+    --shadow-lg: 0 8px 32px rgba(107,63,160,0.14);
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN SCREEN ── */
+  #login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 60% 20%, rgba(107,63,160,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(0,179,164,0.08) 0%, transparent 50%),
+                var(--bg);
+  }
+
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 48px;
+    width: 380px;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .login-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .login-logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--purple);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-logo-icon svg { width: 20px; height: 20px; }
+
+  .login-logo-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+
+  .login-logo-badge {
+    background: var(--purple-light);
+    color: var(--purple);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-left: 4px;
+  }
+
+  .login-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+
+  .login-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .field-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-mid);
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+  }
+
+  .field-input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: var(--font);
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 150ms, box-shadow 150ms;
+  }
+
+  .field-input:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(107,63,160,0.12);
+    background: white;
+  }
+
+  .login-error {
+    font-size: 12px;
+    color: var(--error);
+    margin-top: 8px;
+    display: none;
+  }
+
+  .btn-primary {
+    width: 100%;
+    height: 44px;
+    background: var(--purple);
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 180ms, transform 100ms;
+    letter-spacing: 0.1px;
+  }
+
+  .btn-primary:hover { background: var(--purple-dark); }
+  .btn-primary:active { transform: scale(0.98); }
+
+  /* ── ADMIN SHELL ── */
+  #admin-screen { display: none; flex-direction: column; min-height: 100vh; }
+
+  /* Top bar */
+  .topbar {
+    height: 56px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .topbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+
+  .topbar-logo-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--purple);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .topbar-logo-icon svg { width: 16px; height: 16px; }
+
+  .topbar-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+  }
+
+  .topbar-section {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .topbar-count {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  .btn-logout {
+    height: 32px;
+    padding: 0 14px;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    border-radius: 9999px;
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color 150ms, color 150ms;
+  }
+
+  .btn-logout:hover { border-color: var(--error); color: var(--error); }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat-cell {
+    flex: 1;
+    background: var(--surface);
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+    font-family: var(--mono);
+  }
+
+  .stat-value.purple { color: var(--purple); }
+  .stat-value.teal { color: var(--teal); }
+  .stat-value.success { color: var(--success); }
+  .stat-value.warning { color: var(--warning); }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 320px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    height: 36px;
+    padding: 0 12px 0 36px;
+    border: 1.5px solid var(--border);
+    border-radius: 9999px;
+    font-family: var(--font);
+    font-size: 13px;
+    background: var(--surface);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 150ms, box-shadow 150ms;
+  }
+
+  .search-input:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(107,63,160,0.10);
+  }
+
+  .filter-select {
+    height: 36px;
+    padding: 0 32px 0 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: var(--font);
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--surface);
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6B8A' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    transition: border-color 150ms;
+  }
+
+  .filter-select:focus { border-color: var(--purple); outline: none; }
+
+  .toolbar-spacer { flex: 1; }
+
+  .btn-refresh {
+    height: 36px;
+    padding: 0 14px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: border-color 150ms, color 150ms;
+  }
+
+  .btn-refresh:hover { border-color: var(--purple); color: var(--purple); }
+
+  /* Table */
+  .table-wrap {
+    flex: 1;
+    overflow: auto;
+    padding: 0 24px 24px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    margin-top: 16px;
+    border: 1px solid var(--border);
+  }
+
+  thead {
+    background: #F9F8FE;
+    border-bottom: 1.5px solid var(--border);
+  }
+
+  th {
+    padding: 11px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  th:first-child { padding-left: 20px; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 120ms;
+    cursor: default;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #FAFAFE; }
+
+  td {
+    padding: 13px 14px;
+    font-size: 13px;
+    color: var(--ink);
+    vertical-align: middle;
+  }
+
+  td:first-child { padding-left: 20px; }
+
+  .td-id {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .td-name {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .td-contact {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .td-addr {
+    color: var(--muted);
+    font-size: 12px;
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .td-date {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .td-partner {
+    font-size: 12px;
+    color: var(--ink-mid);
+  }
+
+  /* Status badge */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Status color map */
+  .s-submitted        { background: #EEF2FF; color: #4338CA; }
+  .s-submitted .status-dot        { background: #4338CA; }
+  .s-contacted        { background: #FFF7ED; color: #C2410C; }
+  .s-contacted .status-dot        { background: #C2410C; }
+  .s-pre_qual_complete { background: #EFF6FF; color: #1D4ED8; }
+  .s-pre_qual_complete .status-dot { background: #1D4ED8; }
+  .s-application_started { background: #F5F3FF; color: #7C3AED; }
+  .s-application_started .status-dot { background: #7C3AED; }
+  .s-application_approved { background: #ECFDF5; color: #065F46; }
+  .s-application_approved .status-dot { background: #065F46; }
+  .s-application_rejected { background: #FEF2F2; color: #991B1B; }
+  .s-application_rejected .status-dot { background: #991B1B; }
+  .s-closed           { background: #F0FDF4; color: #15803D; }
+  .s-closed .status-dot           { background: #15803D; }
+  .s-paid             { background: #FEFCE8; color: #854D0E; }
+  .s-paid .status-dot             { background: #854D0E; }
+
+  /* Status select in table */
+  .status-select {
+    appearance: none;
+    height: 28px;
+    padding: 0 24px 0 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 9999px;
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236B6B8A' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    transition: border-color 150ms, box-shadow 150ms;
+    min-width: 170px;
+  }
+
+  .status-select:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(107,63,160,0.10);
+  }
+
+  .status-select.saving {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  /* Save flash */
+  @keyframes flashSave {
+    0%   { background: var(--teal-light); border-color: var(--teal); }
+    100% { background: transparent; border-color: var(--border); }
+  }
+
+  tbody tr.saved-flash {
+    animation: flashSave 1.2s ease forwards;
+  }
+
+  /* Empty / loading states */
+  .table-state {
+    text-align: center;
+    padding: 64px 24px;
+    color: var(--muted);
+  }
+
+  .table-state-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+
+  .table-state-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink-mid);
+    margin-bottom: 4px;
+  }
+
+  .table-state-sub {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* Loading spinner */
+  .spin {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(107,63,160,0.2);
+    border-top-color: var(--purple);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--ink);
+    color: white;
+    padding: 12px 18px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 250ms, transform 250ms;
+    pointer-events: none;
+    z-index: 999;
+    max-width: 320px;
+  }
+
+  #toast.show { opacity: 1; transform: translateY(0); }
+  #toast.success { background: var(--success); }
+  #toast.error { background: var(--error); }
+
+  /* Detail drawer */
+  .drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,26,46,0.4);
+    backdrop-filter: blur(2px);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 250ms;
+  }
+
+  .drawer-overlay.open { opacity: 1; pointer-events: all; }
+
+  .drawer {
+    position: fixed;
+    top: 0;
+    right: -480px;
+    width: 480px;
+    height: 100vh;
+    background: var(--surface);
+    box-shadow: -8px 0 40px rgba(107,63,160,0.15);
+    z-index: 201;
+    display: flex;
+    flex-direction: column;
+    transition: right 280ms cubic-bezier(0.4,0,0.2,1);
+    overflow: hidden;
+  }
+
+  .drawer.open { right: 0; }
+
+  .drawer-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    background: #FAFAFE;
+  }
+
+  .drawer-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+
+  .drawer-id {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .drawer-close {
+    width: 32px;
+    height: 32px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--muted);
+    flex-shrink: 0;
+    transition: background 150ms, color 150ms;
+  }
+
+  .drawer-close:hover { background: var(--border); color: var(--ink); }
+
+  .drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+  }
+
+  .drawer-section {
+    margin-bottom: 24px;
+  }
+
+  .drawer-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .drawer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .drawer-field {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .drawer-field-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.2px;
+  }
+
+  .drawer-field-value {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .drawer-field-value.mono {
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .drawer-field-value.empty { color: var(--muted); font-style: italic; }
+
+  .drawer-status-wrap {
+    padding: 16px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .drawer-status-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .drawer-status-select {
+    width: 100%;
+    height: 40px;
+    padding: 0 36px 0 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    background: white;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6B8A' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 150ms;
+  }
+
+  .drawer-status-select:focus { border-color: var(--purple); }
+
+  .drawer-save-btn {
+    width: 100%;
+    height: 40px;
+    background: var(--purple);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 150ms;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .drawer-save-btn:hover { background: var(--purple-dark); }
+  .drawer-save-btn:disabled { opacity: 0.6; pointer-events: none; }
+
+  .history-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .history-item:last-child { border-bottom: none; }
+
+  .history-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--purple);
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+
+  .history-status {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .history-time {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-top: 2px;
+  }
+
+  .notes-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: var(--font);
+    font-size: 13px;
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+    transition: border-color 150ms;
+  }
+
+  .notes-textarea:focus { border-color: var(--purple); }
+
+  /* Config modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,26,46,0.5);
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+  }
+
+  .modal-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    width: 460px;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .modal-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .modal-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  .modal-field { margin-bottom: 16px; }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .btn-modal-primary {
+    flex: 1;
+    height: 40px;
+    background: var(--purple);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 150ms;
+  }
+
+  .btn-modal-primary:hover { background: var(--purple-dark); }
+
+  .btn-modal-secondary {
+    height: 40px;
+    padding: 0 20px;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: var(--font);
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #C0BCE0; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ CONFIG MODAL ═══════════ -->
+<div class="modal-overlay" id="config-modal">
+  <div class="modal-card">
+    <div class="modal-title">Connect to Supabase</div>
+    <div class="modal-sub">Enter your Supabase project credentials. These are stored in <code style="font-family:var(--mono);font-size:12px;background:#F0EEF8;padding:1px 5px;border-radius:4px;">localStorage</code> and never sent anywhere except your Supabase instance.</div>
+    <div class="modal-field">
+      <label class="field-label">Supabase Project URL</label>
+      <input class="field-input" id="cfg-url" placeholder="https://xxxx.supabase.co" />
+    </div>
+    <div class="modal-field">
+      <label class="field-label">Anon / Service Role Key</label>
+      <input class="field-input" id="cfg-key" placeholder="eyJ..." type="password" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-secondary" id="cfg-cancel">Cancel</button>
+      <button class="btn-modal-primary" id="cfg-save">Save & Connect</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ LOGIN SCREEN ═══════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 2L1 9h3v9h5v-5h2v5h5V9h3L10 2z" fill="white"/>
+        </svg>
+      </div>
+      <span class="login-logo-text">hometap <span class="login-logo-badge">admin</span></span>
+    </div>
+    <div class="login-title">Internal Admin Panel</div>
+    <div class="login-sub">Restricted access. Enter your admin password to continue.</div>
+    <div>
+      <label class="field-label" for="pw-input">Admin Password</label>
+      <input class="field-input" type="password" id="pw-input" placeholder="••••••••" />
+      <div class="login-error" id="pw-error">Incorrect password. Please try again.</div>
+    </div>
+    <button class="btn-primary" id="login-btn">Sign In</button>
+    <div style="margin-top:14px;display:flex;justify-content:center;">
+      <button onclick="openConfigModal()" style="background:none;border:none;font-family:var(--font);font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline;">⚙ Configure Supabase connection</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ADMIN SCREEN ═══════════ -->
+<div id="admin-screen">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">
+        <div class="topbar-logo-icon">
+          <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 2L1 9h3v9h5v-5h2v5h5V9h3L10 2z" fill="white"/>
+          </svg>
+        </div>
+        hometap
+      </div>
+      <div class="topbar-divider"></div>
+      <div class="topbar-section">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Leads Dashboard
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-count" id="lead-count">— leads</span>
+      <button class="btn-logout" onclick="logout()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div class="stat-cell">
+      <div class="stat-label">Total Leads</div>
+      <div class="stat-value purple" id="stat-total">—</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">New / Submitted</div>
+      <div class="stat-value" id="stat-new">—</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">In Progress</div>
+      <div class="stat-value teal" id="stat-progress">—</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Approved</div>
+      <div class="stat-value success" id="stat-approved">—</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Paid / Closed</div>
+      <div class="stat-value warning" id="stat-closed">—</div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="search-input" placeholder="Search name, email, address…" oninput="filterTable()" />
+    </div>
+    <select class="filter-select" id="status-filter" onchange="filterTable()">
+      <option value="">All Statuses</option>
+    </select>
+    <select class="filter-select" id="partner-filter" onchange="filterTable()">
+      <option value="">All Partners</option>
+      <option value="direct">Direct (no partner)</option>
+    </select>
+    <div class="toolbar-spacer"></div>
+    <button class="btn-refresh" onclick="loadLeads()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+      Refresh
+    </button>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table id="leads-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Contact</th>
+          <th>Address</th>
+          <th>Use Case</th>
+          <th>Partner</th>
+          <th>Submitted</th>
+          <th>Referral Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="leads-tbody">
+        <tr><td colspan="9" class="table-state">
+          <div class="table-state-icon">⏳</div>
+          <div class="table-state-title">Loading leads…</div>
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════ DETAIL DRAWER ═══════════ -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="lead-drawer">
+  <div class="drawer-header">
+    <div>
+      <div class="drawer-name" id="drawer-name">—</div>
+      <div class="drawer-id" id="drawer-id">—</div>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-body">
+
+    <div class="drawer-section">
+      <div class="drawer-section-label">Referral Status</div>
+      <div class="drawer-status-wrap">
+        <select class="drawer-status-select" id="drawer-status-select"></select>
+        <button class="drawer-save-btn" id="drawer-save-btn" onclick="saveDrawerStatus()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Save Status
+        </button>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-section-label">Contact Information</div>
+      <div class="drawer-grid">
+        <div class="drawer-field">
+          <div class="drawer-field-label">First Name</div>
+          <div class="drawer-field-value" id="d-first">—</div>
+        </div>
+        <div class="drawer-field">
+          <div class="drawer-field-label">Last Name</div>
+          <div class="drawer-field-value" id="d-last">—</div>
+        </div>
+        <div class="drawer-field">
+          <div class="drawer-field-label">Email</div>
+          <div class="drawer-field-value" id="d-email">—</div>
+        </div>
+        <div class="drawer-field">
+          <div class="drawer-field-label">Phone</div>
+          <div class="drawer-field-value mono" id="d-phone">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-section-label">Property</div>
+      <div class="drawer-grid">
+        <div class="drawer-field" style="grid-column:1/-1">
+          <div class="drawer-field-label">Address</div>
+          <div class="drawer-field-value" id="d-address">—</div>
+        </div>
+        <div class="drawer-field">
+          <div class="drawer-field-label">City</div>
+          <div class="drawer-field-value" id="d-city">—</div>
+        </div>
+        <div class="drawer-field">
+          <div class="drawer-field-label">State / ZIP</div>
+          <div class="drawer-field-value" id="d-state-zip">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-section-label">Lead Details</div>
+      <div class="drawer-grid">
+        <div class="drawer-field">
+          <div class="drawer-field-label">Use Case</div>
+          <div class="drawer-field-value" id="d-usecase">—</div>
+        </div>
+        <div class="drawer-field">
+          <div class="drawer-field-label">Partner</div>
+          <div class="drawer-field-value" id="d-partner">—</div>
+        </div>
+        <div class="drawer-field">
+          <div class="drawer-field-label">Submitted At</div>
+          <div class="drawer-field-value mono" id="d-submitted">—</div>
+        </div>
+        <div class="drawer-field">
+          <div class="drawer-field-label">Lead ID</div>
+          <div class="drawer-field-value mono" id="d-leadid">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-section-label">Notes</div>
+      <textarea class="notes-textarea" id="drawer-notes" placeholder="Add internal notes…"></textarea>
+      <button class="drawer-save-btn" onclick="saveDrawerNotes()" style="margin-top:8px;background:var(--ink-mid);">Save Notes</button>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-section-label">Status History</div>
+      <div id="drawer-history">
+        <div style="font-size:13px;color:var(--muted);font-style:italic;">No history available.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ TOAST ═══════════ -->
+<div id="toast"></div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────
+const ADMIN_PASSWORD = 'hometap';
+
+let supabase = null;
+let allLeads = [];
+let allStatuses = [];
+let currentDrawerLeadId = null;
+let partnerMap = {};
+
+function getConfig() {
+  return {
+    url: localStorage.getItem('ht_admin_url') || '',
+    key: localStorage.getItem('ht_admin_key') || ''
+  };
+}
+
+function saveConfig(url, key) {
+  localStorage.setItem('ht_admin_url', url);
+  localStorage.setItem('ht_admin_key', key);
+}
+
+function initSupabase() {
+  const { url, key } = getConfig();
+  if (!url || !key) return false;
+  try {
+    supabase = window.supabase.createClient(url, key);
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
+// ── CONFIG MODAL ─────────────────────────────────────────────
+function openConfigModal() {
+  const { url, key } = getConfig();
+  document.getElementById('cfg-url').value = url;
+  document.getElementById('cfg-key').value = key;
+  document.getElementById('config-modal').style.display = 'flex';
+}
+
+document.getElementById('cfg-cancel').onclick = () => {
+  document.getElementById('config-modal').style.display = 'none';
+};
+
+document.getElementById('cfg-save').onclick = () => {
+  const url = document.getElementById('cfg-url').value.trim();
+  const key = document.getElementById('cfg-key').value.trim();
+  if (!url || !key) { showToast('Please fill in both fields', 'error'); return; }
+  saveConfig(url, key);
+  initSupabase();
+  document.getElementById('config-modal').style.display = 'none';
+  showToast('Supabase connection saved ✓', 'success');
+};
+
+// ── AUTH ─────────────────────────────────────────────────────
+document.getElementById('pw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('login-btn').click();
+});
+
+document.getElementById('login-btn').onclick = () => {
+  const pw = document.getElementById('pw-input').value;
+  const err = document.getElementById('pw-error');
+
+  if (pw === ADMIN_PASSWORD) {
+    err.style.display = 'none';
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'flex';
+    document.getElementById('admin-screen').style.flexDirection = 'column';
+    if (!initSupabase()) {
+      openConfigModal();
+    } else {
+      loadStatuses().then(() => loadLeads());
+    }
+  } else {
+    err.style.display = 'block';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+};
+
+function logout() {
+  document.getElementById('admin-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('pw-input').value = '';
+}
+
+// ── DATA LOADING ─────────────────────────────────────────────
+async function loadStatuses() {
+  if (!supabase) return;
+  const { data, error } = await supabase
+    .from('referral_statuses')
+    .select('*')
+    .order('sort_order');
+  if (error) { console.error(error); return; }
+  allStatuses = data || [];
+
+  // Populate status filter
+  const sf = document.getElementById('status-filter');
+  sf.innerHTML = '<option value="">All Statuses</option>';
+  allStatuses.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.slug;
+    opt.textContent = s.label;
+    sf.appendChild(opt);
+  });
+
+  // Populate drawer select
+  const ds = document.getElementById('drawer-status-select');
+  ds.innerHTML = '';
+  allStatuses.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = s.label;
+    ds.appendChild(opt);
+  });
+}
+
+async function loadLeads() {
+  if (!supabase) {
+    renderEmpty('No Supabase connection. Click "Configure Supabase connection" to set up.');
+    return;
+  }
+
+  renderLoading();
+
+  // Fetch leads with joined status and partner
+  const { data, error } = await supabase
+    .from('Leads')
+    .select(`
+      *,
+      referral_statuses ( id, slug, label, sort_order ),
+      partners ( id, name, partner_type, company_name )
+    `)
+    .order('submitted_at', { ascending: false });
+
+  if (error) {
+    console.error(error);
+    renderEmpty('Error loading leads: ' + error.message);
+    showToast('Failed to load leads', 'error');
+    return;
+  }
+
+  allLeads = data || [];
+
+  // Build partner map for filter
+  partnerMap = {};
+  const pf = document.getElementById('partner-filter');
+  pf.innerHTML = '<option value="">All Partners</option><option value="direct">Direct (no partner)</option>';
+  allLeads.forEach(l => {
+    if (l.partners && !partnerMap[l.partners.id]) {
+      partnerMap[l.partners.id] = l.partners.name;
+      const opt = document.createElement('option');
+      opt.value = l.partners.id;
+      opt.textContent = l.partners.name;
+      pf.appendChild(opt);
+    }
+  });
+
+  updateStats(allLeads);
+  filterTable();
+}
+
+function updateStats(leads) {
+  const total = leads.length;
+  const newCount = leads.filter(l => l.referral_statuses?.slug === 'submitted' || !l.referral_status_id).length;
+  const inProgress = leads.filter(l => ['contacted','pre_qual_complete','application_started'].includes(l.referral_statuses?.slug)).length;
+  const approved = leads.filter(l => l.referral_statuses?.slug === 'application_approved').length;
+  const closed = leads.filter(l => ['closed','paid'].includes(l.referral_statuses?.slug)).length;
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-new').textContent = newCount;
+  document.getElementById('stat-progress').textContent = inProgress;
+  document.getElementById('stat-approved').textContent = approved;
+  document.getElementById('stat-closed').textContent = closed;
+  document.getElementById('lead-count').textContent = total + ' lead' + (total !== 1 ? 's' : '');
+}
+
+function filterTable() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const statusFilter = document.getElementById('status-filter').value;
+  const partnerFilter = document.getElementById('partner-filter').value;
+
+  let filtered = allLeads.filter(l => {
+    const fullName = `${l.first_name || ''} ${l.last_name || ''}`.toLowerCase();
+    const email = (l.email || '').toLowerCase();
+    const addr = `${l.address1 || ''} ${l.city || ''} ${l.state || ''}`.toLowerCase();
+    const matchSearch = !search || fullName.includes(search) || email.includes(search) || addr.includes(search);
+    const matchStatus = !statusFilter || l.referral_statuses?.slug === statusFilter;
+    const matchPartner = !partnerFilter
+      ? true
+      : partnerFilter === 'direct'
+        ? !l.partner_id
+        : l.partner_id === partnerFilter;
+    return matchSearch && matchStatus && matchPartner;
+  });
+
+  renderTable(filtered);
+}
+
+// ── RENDER ───────────────────────────────────────────────────
+function renderLoading() {
+  document.getElementById('leads-tbody').innerHTML = `
+    <tr><td colspan="9" class="table-state">
+      <div style="margin-bottom:12px;"><span class="spin"></span></div>
+      <div class="table-state-title">Loading leads…</div>
+    </td></tr>`;
+}
+
+function renderEmpty(msg) {
+  document.getElementById('leads-tbody').innerHTML = `
+    <tr><td colspan="9" class="table-state">
+      <div class="table-state-icon">📭</div>
+      <div class="table-state-title">No leads found</div>
+      <div class="table-state-sub">${msg || ''}</div>
+    </td></tr>`;
+}
+
+function renderTable(leads) {
+  const tbody = document.getElementById('leads-tbody');
+  if (!leads.length) {
+    renderEmpty('No leads match your filters.');
+    return;
+  }
+
+  tbody.innerHTML = leads.map(l => {
+    const status = l.referral_statuses;
+    const partner = l.partners;
+    const slug = status?.slug || 'submitted';
+    const label = status?.label || 'Submitted';
+    const date = l.submitted_at ? new Date(l.submitted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' }) : '—';
+
+    const statusOpts = allStatuses.map(s =>
+      `<option value="${s.id}" ${l.referral_status_id === s.id ? 'selected' : ''}>${s.label}</option>`
+    ).join('');
+
+    const partnerLabel = partner ? `<span style="display:flex;align-items:center;gap:4px;">${partner.partner_type === 'contractor' ? '🔨' : '🏠'} ${partner.name}</span>` : '<span style="color:var(--muted)">—</span>';
+
+    return `<tr id="row-${l.LeadID}" onclick="openDrawer(${l.LeadID})" style="cursor:pointer;">
+      <td class="td-id">#${l.LeadID}</td>
+      <td class="td-name">${l.first_name || ''} ${l.last_name || ''}</td>
+      <td>
+        <div style="font-size:12px;">${l.email || '<span style="color:var(--muted)">—</span>'}</div>
+        <div class="td-contact">${formatPhone(l.phone) || ''}</div>
+      </td>
+      <td class="td-addr" title="${l.address1 || ''}, ${l.city || ''}, ${l.state || ''}">${l.address1 ? l.address1 + ', ' + (l.city || '') : '<span style="color:var(--muted)">—</span>'}</td>
+      <td style="font-size:12px;color:var(--ink-mid);">${formatUseCase(l.use_case)}</td>
+      <td class="td-partner">${partnerLabel}</td>
+      <td class="td-date">${date}</td>
+      <td onclick="event.stopPropagation()">
+        <select class="status-select s-${slug}" data-lead-id="${l.LeadID}" onchange="updateStatus(this, ${l.LeadID})">
+          ${statusOpts}
+        </select>
+      </td>
+      <td onclick="event.stopPropagation()" style="text-align:center;">
+        <button onclick="openDrawer(${l.LeadID})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:4px 6px;border-radius:6px;transition:background 150ms;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'" title="View details">›</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function formatPhone(p) {
+  if (!p) return '';
+  const s = String(p).replace(/\D/g, '');
+  if (s.length === 10) return `(${s.slice(0,3)}) ${s.slice(3,6)}-${s.slice(6)}`;
+  return s;
+}
+
+function formatUseCase(uc) {
+  if (!uc) return '<span style="color:var(--muted)">—</span>';
+  const map = {
+    debt_payoff: 'Debt Payoff',
+    renovation: 'Renovation',
+    retirement: 'Retirement',
+    business: 'Business',
+    life_event: 'Life Event',
+    cash_management: 'Cash Mgmt',
+    education: 'Education',
+    other: 'Other'
+  };
+  return map[uc] || uc;
+}
+
+// ── STATUS UPDATE (inline) ────────────────────────────────────
+async function updateStatus(selectEl, leadId) {
+  if (!supabase) { showToast('Not connected to Supabase', 'error'); return; }
+
+  const newStatusId = parseInt(selectEl.value);
+  selectEl.classList.add('saving');
+
+  const { error } = await supabase
+    .from('Leads')
+    .update({ referral_status_id: newStatusId })
+    .eq('LeadID', leadId);
+
+  selectEl.classList.remove('saving');
+
+  if (error) {
+    showToast('Failed to update status', 'error');
+    console.error(error);
+    return;
+  }
+
+  // Find new slug for badge re-coloring
+  const newStatus = allStatuses.find(s => s.id === newStatusId);
+  if (newStatus) {
+    // Remove old status class, add new
+    selectEl.className = `status-select s-${newStatus.slug}`;
+  }
+
+  // Update local data
+  const lead = allLeads.find(l => l.LeadID === leadId);
+  if (lead) {
+    lead.referral_status_id = newStatusId;
+    lead.referral_statuses = newStatus;
+  }
+
+  // Log history
+  await logStatusHistory(leadId, newStatusId);
+
+  // Flash row
+  const row = document.getElementById(`row-${leadId}`);
+  if (row) {
+    row.classList.add('saved-flash');
+    setTimeout(() => row.classList.remove('saved-flash'), 1200);
+  }
+
+  updateStats(allLeads);
+  showToast('Status updated ✓', 'success');
+}
+
+async function logStatusHistory(leadId, statusId) {
+  if (!supabase) return;
+  await supabase.from('referral_status_history').insert({
+    lead_id: leadId,
+    status_id: statusId,
+    changed_at: new Date().toISOString()
+  });
+}
+
+// ── DRAWER ────────────────────────────────────────────────────
+async function openDrawer(leadId) {
+  const lead = allLeads.find(l => l.LeadID === leadId);
+  if (!lead) return;
+
+  currentDrawerLeadId = leadId;
+
+  document.getElementById('drawer-name').textContent = `${lead.first_name || ''} ${lead.last_name || ''}`.trim() || 'Unnamed Lead';
+  document.getElementById('drawer-id').textContent = `Lead #${lead.LeadID}`;
+  document.getElementById('d-first').textContent = lead.first_name || '—';
+  document.getElementById('d-last').textContent = lead.last_name || '—';
+  document.getElementById('d-email').textContent = lead.email || '—';
+  document.getElementById('d-phone').textContent = formatPhone(lead.phone) || '—';
+  document.getElementById('d-address').textContent = lead.address1 || '—';
+  document.getElementById('d-city').textContent = lead.city || '—';
+  document.getElementById('d-state-zip').textContent = [lead.state, lead.zip].filter(Boolean).join(' ') || '—';
+  document.getElementById('d-usecase').textContent = formatUseCase(lead.use_case);
+  document.getElementById('d-partner').textContent = lead.partners?.name || 'Direct';
+  document.getElementById('d-submitted').textContent = lead.submitted_at ? new Date(lead.submitted_at).toLocaleString() : '—';
+  document.getElementById('d-leadid').textContent = `#${lead.LeadID}`;
+  document.getElementById('drawer-notes').value = lead.notes || '';
+
+  // Set status select
+  const ds = document.getElementById('drawer-status-select');
+  if (lead.referral_status_id) {
+    ds.value = lead.referral_status_id;
+  }
+
+  // Load history
+  loadHistory(leadId);
+
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('lead-drawer').classList.add('open');
+}
+
+function closeDrawer() {
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.getElementById('lead-drawer').classList.remove('open');
+  currentDrawerLeadId = null;
+}
+
+async function loadHistory(leadId) {
+  if (!supabase) return;
+  const { data, error } = await supabase
+    .from('referral_status_history')
+    .select('*, referral_statuses(label)')
+    .eq('lead_id', leadId)
+    .order('changed_at', { ascending: false });
+
+  const container = document.getElementById('drawer-history');
+
+  if (error || !data || !data.length) {
+    container.innerHTML = '<div style="font-size:13px;color:var(--muted);font-style:italic;">No history recorded yet.</div>';
+    return;
+  }
+
+  container.innerHTML = data.map(h => `
+    <div class="history-item">
+      <div class="history-dot"></div>
+      <div>
+        <div class="history-status">${h.referral_statuses?.label || 'Unknown'}</div>
+        <div class="history-time">${new Date(h.changed_at).toLocaleString()}</div>
+      </div>
+    </div>`).join('');
+}
+
+async function saveDrawerStatus() {
+  if (!currentDrawerLeadId || !supabase) return;
+  const newStatusId = parseInt(document.getElementById('drawer-status-select').value);
+  const btn = document.getElementById('drawer-save-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin" style="border-color:rgba(255,255,255,0.3);border-top-color:white;"></span> Saving…';
+
+  const { error } = await supabase
+    .from('Leads')
+    .update({ referral_status_id: newStatusId })
+    .eq('LeadID', currentDrawerLeadId);
+
+  btn.disabled = false;
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Save Status';
+
+  if (error) { showToast('Failed to save', 'error'); return; }
+
+  await logStatusHistory(currentDrawerLeadId, newStatusId);
+
+  // Update local + re-render
+  const lead = allLeads.find(l => l.LeadID === currentDrawerLeadId);
+  const newStatus = allStatuses.find(s => s.id === newStatusId);
+  if (lead && newStatus) {
+    lead.referral_status_id = newStatusId;
+    lead.referral_statuses = newStatus;
+  }
+
+  filterTable();
+  updateStats(allLeads);
+  loadHistory(currentDrawerLeadId);
+  showToast('Status saved ✓', 'success');
+}
+
+async function saveDrawerNotes() {
+  if (!currentDrawerLeadId || !supabase) return;
+  const notes = document.getElementById('drawer-notes').value;
+
+  const { error } = await supabase
+    .from('Leads')
+    .update({ notes })
+    .eq('LeadID', currentDrawerLeadId);
+
+  if (error) { showToast('Failed to save notes', 'error'); return; }
+
+  const lead = allLeads.find(l => l.LeadID === currentDrawerLeadId);
+  if (lead) lead.notes = notes;
+  showToast('Notes saved ✓', 'success');
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.classList.remove('show'); }, 2800);
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+// Hide config modal on start unless no config
+document.getElementById('config-modal').style.display = 'none';
+initSupabase();
+</script>
+</body>
+</html>

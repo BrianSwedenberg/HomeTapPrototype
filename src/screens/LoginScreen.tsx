@@ -104,6 +104,25 @@ export function LoginScreen() {
           </div>
         </div>
 
+        {/* Admin access */}
+        <button
+          onClick={() => navigateTo('admin-login')}
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '11px',
+            color: '#5C5C7A',
+            marginTop: '20px',
+            opacity: 0.5,
+            textDecoration: 'none',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.color = '#6B3FA0'; }}
+          onMouseLeave={e => { e.currentTarget.style.opacity = '0.5'; e.currentTarget.style.color = '#5C5C7A'; }}
+        >
+          admin
+        </button>
+
       </div>
     </div>
   );
