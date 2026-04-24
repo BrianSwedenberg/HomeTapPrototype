@@ -52,7 +52,7 @@ export function LoginScreen() {
 
         {/* Login Card */}
         <div className="bg-bg-card rounded-lg shadow-card p-8 w-full" style={{ padding: '32px 28px' }}>
-          <div className="text-[20px] font-bold text-text-primary mb-[6px] tracking-[-0.3px]">Welcome back</div>
+          <div className="text-[20px] font-bold text-text-primary mb-[6px] tracking-[-0.3px]">Welcome back Brian</div>
           <div className="text-[13px] text-text-secondary mb-6 leading-relaxed">Select your account to continue.</div>
 
           {partners.map((partner) => {
